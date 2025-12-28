@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Spesial Untukmu 💌</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Dancing Script', cursive;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Hati jatuh */
+        .hearts {
+            position: absolute;
+            top: -50px;
+            font-size: 30px;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
+
+        /* Container amplop */
+        .envelope-container {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            cursor: pointer;
+        }
+
+        /* Amplop bagian belakang */
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #f08080;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Tutup amplop (flap) */
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #ff6b6b;
+            transform-origin: top;
+            transition: transform 1.5s ease-in-out;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+
+        /* Surat di dalam */
+        .letter {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 80%;
+            height: 70%;
+            background: white;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: all 1.5s ease-in-out 0.8s;
+        }
+
+        /* Saat dibuka */
+        .open .flap {
+            transform: rotateX(180deg);
+        }
+        .open .letter {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Tombol Confirm */
+        .confirm-btn {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background: #ff1493;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .confirm-btn:hover {
+            background: #ff69b4;
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        /* Hide tombol setelah klik */
+        .opened .confirm-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hati jatuh (beberapa) -->
+    <div class="hearts" style="left:10%; animation-duration:10s;">❤️</div>
+    <div class="hearts" style="left:30%; animation-duration:15s; animation-delay:2s;">💕</div>
+    <div class="hearts" style="left:50%; animation-duration:12s; animation-delay:1s;">💖</div>
+    <div class="hearts" style="left:70%; animation-duration:14s; animation-delay:3s;">💗</div>
+    <div class="hearts" style="left:90%; animation-duration:11s;">❤️</div>
+
+    <div class="envelope-container" id="envelopeBox">
+        <div class="envelope">
+            <div class="flap"></div>
+            <div class="letter">
+                <h1>Sayangku 💕</h1>
+                <p>Ini surat spesial buat kamu...</p>
+                <p>Aku cinta kamu lebih dari apa pun di dunia ini. Setiap hari bersamamu adalah kebahagiaan terbesar. Terima kasih sudah jadi bagian hidupku! ❤️</p>
+                <p>Selamanya milikmu,<br>[Namamu]</p>
+            </div>
+        </div>
+        <button class="confirm-btn" id="openBtn">Confirm / Open Surat</button>
+    </div>
+
+    <!-- Musik (ganti link lagu kalau mau) -->
+    <audio autoplay loop volume="0.5">
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3" type="audio/mpeg">
+        <!-- Ganti dengan lagu romantis, misal upload ke situs gratis atau pakai link YouTube audio -->
+    </audio>
+
+    <script>
+        const box = document.getElementById('envelopeBox');
+        const btn = document.getElementById('openBtn');
+
+        btn.addEventListener('click', () => {
+            box.classList.add('open', 'opened');
+        });
+    </script>
+</body>
+</html>
