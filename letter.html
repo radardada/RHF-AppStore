@@ -48,11 +48,13 @@
       100% { transform: translateY(-200px) translateX(calc(100vw * (Math.random() - 0.5) * 2)) scale(1.5); opacity: 0; }
     }
 
-    /* Animasi Membuka Surat */
+    /* Envelope & Animasi Membuka */
     #letterEnvelope {
       perspective: 1000px;
       width: 90%;
       max-width: 700px;
+      height: 90vh;
+      max-height: 800px;
       position: relative;
       z-index: 10;
     }
@@ -62,7 +64,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 50%;
+      height: 40%;
       background: linear-gradient(to bottom, #111, #000);
       border: 4px solid #ffd700;
       border-bottom: none;
@@ -80,26 +82,47 @@
       border-radius: 20px;
       padding: 60px 40px;
       box-shadow: 0 0 100px rgba(255,215,0,0.8), inset 0 0 40px rgba(255,215,0,0.2);
-      text-align: center;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       opacity: 0;
       animation: revealLetter 2s ease 1s forwards;
+      overflow: hidden;
     }
-    @keyframes revealLetter {
-      to { opacity: 1; }
+    @keyframes revealLetter { to { opacity: 1; } }
+
+    .open #letterFlap { transform: rotateX(-180deg); }
+
+    /* Scrollable Content */
+    .letter-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+      margin-bottom: 40px;
+    }
+    .letter-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    .letter-content::-webkit-scrollbar-track {
+      background: #111;
+      border-radius: 10px;
+    }
+    .letter-content::-webkit-scrollbar-thumb {
+      background: #d4af37;
+      border-radius: 10px;
+    }
+    .letter-content::-webkit-scrollbar-thumb:hover {
+      background: #ffd700;
     }
 
-    /* Efek Membuka Flap Envelope */
-    .open #letterFlap {
-      transform: rotateX(-180deg);
-    }
-
-    /* Isi Surat */
     .letter-title {
       font-family: 'Cinzel', serif;
       font-size: clamp(2.5rem, 8vw, 4rem);
       letter-spacing: 8px;
       margin-bottom: 40px;
       text-shadow: 0 0 30px #ffd700;
+      text-align: center;
     }
     .letter-code {
       font-size: clamp(1.8rem, 6vw, 3rem);
@@ -108,24 +131,26 @@
       margin: 40px 0;
       color: #ffd700;
       text-shadow: 0 0 40px #ffd700;
+      text-align: center;
     }
     .letter-notes {
       font-size: 1.4rem;
-      line-height: 1.8;
+      line-height: 1.9;
       margin: 40px 0;
-      max-width: 80%;
-      margin-left: auto;
-      margin-right: auto;
       white-space: pre-line;
+      text-align: justify;
     }
     .letter-logo {
       max-width: 200px;
       margin: 40px auto;
+      display: block;
       border-radius: 15px;
       box-shadow: 0 0 40px rgba(255,215,0,0.6);
     }
     .download-btn {
-      display: inline-block;
+      display: block;
+      width: fit-content;
+      margin: 40px auto;
       padding: 18px 60px;
       background: transparent;
       border: 4px solid #ffd700;
@@ -134,7 +159,6 @@
       font-size: 1.6rem;
       letter-spacing: 5px;
       border-radius: 20px;
-      margin: 40px 0;
       text-decoration: none;
       transition: all 0.5s;
     }
@@ -147,12 +171,14 @@
     /* Cap Lisensi Besar di Bawah */
     .license-stamp-large {
       width: 300px;
-      margin: 50px auto 0;
+      margin: 40px auto 20px;
+      display: block;
       opacity: 0.9;
       filter: drop-shadow(0 0 40px #ffd700);
     }
     @media (max-width: 480px) {
       .license-stamp-large { width: 200px; }
+      .letter-content { padding-right: 5px; }
     }
   </style>
 </head>
@@ -161,21 +187,22 @@
   <!-- Partikel Emas -->
   <div class="particles" id="particles"></div>
 
-  <!-- Envelope & Surat dengan Animasi Membuka -->
+  <!-- Envelope & Surat -->
   <div id="letterEnvelope">
     <div id="letterFlap"></div>
     <div id="letterBody">
-      <h1 class="letter-title">SURAT EKSKLUSIF RHF</h1>
-      <div class="letter-code" id="codeDisplay">KODE RAHASIA</div>
-      <p class="letter-notes" id="notesDisplay">Selamat, Anda telah membuka undangan eksklusif RHF.</p>
-      <img id="logoDisplay" class="letter-logo" style="display:none;">
-      <a id="downloadBtn" class="download-btn" style="display:none;" target="_blank">DOWNLOAD FILE</a>
+      <div class="letter-content">
+        <h1 class="letter-title">SURAT EKSKLUSIF RHF</h1>
+        <div class="letter-code" id="codeDisplay">KODE RAHASIA</div>
+        <p class="letter-notes" id="notesDisplay">Selamat, Anda telah membuka undangan eksklusif RHF.</p>
+        <img id="logoDisplay" class="letter-logo" style="display:none;">
+        <a id="downloadBtn" class="download-btn" style="display:none;" target="_blank">DOWNLOAD FILE</a>
+      </div>
       <img src="https://i.imgur.com/H4paMmJ.jpeg" alt="Cap Lisensi Resmi RHF" class="license-stamp-large">
     </div>
   </div>
 
   <script>
-    // Generate Partikel
     function createParticles() {
       const container = document.getElementById('particles');
       for (let i = 0; i < 100; i++) {
@@ -192,7 +219,7 @@
     }
     createParticles();
 
-    // Ambil data dari localStorage (dari index.html)
+    // Ambil data dari localStorage
     const data = JSON.parse(localStorage.getItem('currentCodeData') || '{}');
 
     document.getElementById('codeDisplay').textContent = data.code || 'KODE RAHASIA';
@@ -207,10 +234,10 @@
     if (data.download_link) {
       const btn = document.getElementById('downloadBtn');
       btn.href = data.download_link;
-      btn.style.display = 'inline-block';
+      btn.style.display = 'block';
     }
 
-    // Animasi membuka surat setelah load
+    // Animasi membuka surat
     setTimeout(() => {
       document.getElementById('letterEnvelope').classList.add('open');
     }, 500);
