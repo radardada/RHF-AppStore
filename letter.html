@@ -40,15 +40,15 @@
       100% { transform: translateY(-200px) translateX(calc(100vw * (Math.random() - 0.5) * 2)) scale(1.5); opacity: 0; }
     }
 
-    /* Surat Utama - Presisi & Rapi */
+    /* Envelope Surat */
     #letterContainer {
+      perspective: 1200px;
       width: 92%;
       max-width: 720px;
       height: 92vh;
       max-height: 820px;
       margin: auto;
       position: relative;
-      perspective: 1200px;
       z-index: 10;
     }
 
@@ -74,7 +74,7 @@
       border: 4px solid #ffd700;
       border-radius: 25px;
       height: 100%;
-      padding: 60px 45px 100px 45px; /* Padding bawah besar untuk cap */
+      padding: 60px 45px 140px 45px; /* Padding bawah besar untuk cap & scroll */
       box-shadow: 0 0 120px rgba(255,215,0,0.9), inset 0 0 50px rgba(255,215,0,0.2);
       overflow-y: auto;
       opacity: 0;
@@ -84,7 +84,7 @@
 
     .open #letterFlap { transform: rotateX(-180deg); }
 
-    /* Scroll Rapi & Halus */
+    /* Scroll Rapi */
     #letterBody::-webkit-scrollbar {
       width: 10px;
     }
@@ -96,15 +96,12 @@
       background: linear-gradient(#d4af37, #ffd700);
       border-radius: 10px;
     }
-    #letterBody::-webkit-scrollbar-thumb:hover {
-      background: #ffd700;
-    }
 
     .letter-title {
       font-family: 'Cinzel', serif;
       font-size: clamp(2.5rem, 8vw, 4.2rem);
       letter-spacing: 10px;
-      margin-bottom: 50px;
+      margin-bottom: 60px;
       text-shadow: 0 0 35px #ffd700;
       text-align: center;
     }
@@ -112,30 +109,34 @@
       font-size: clamp(2rem, 7vw, 3.5rem);
       font-weight: bold;
       letter-spacing: 12px;
-      margin: 50px 0;
+      margin: 60px 0 80px 0; /* Jarak besar ke catatan */
       color: #ffd700;
       text-shadow: 0 0 50px #ffd700;
       text-align: center;
     }
+
+    /* Catatan di Bawah dengan Jarak Besar */
     .letter-notes {
       font-size: 1.5rem;
       line-height: 2.1;
-      margin: 50px 0;
+      margin: 80px 0 60px 0; /* Jarak atas besar agar tidak nyatu */
       white-space: pre-line;
       text-align: justify;
       text-justify: inter-word;
     }
+
     .letter-logo {
-      max-width: 240px;
-      margin: 60px auto;
+      max-width: 260px;
+      margin: 80px auto 60px auto; /* Jarak besar atas & bawah */
       display: block;
       border-radius: 20px;
       box-shadow: 0 0 50px rgba(255,215,0,0.7);
     }
+
     .download-btn {
       display: block;
       width: fit-content;
-      margin: 60px auto;
+      margin: 80px auto 60px auto;
       padding: 20px 80px;
       background: transparent;
       border: 4px solid #ffd700;
@@ -167,8 +168,9 @@
     }
     @media (max-width: 480px) {
       .license-stamp-fixed { width: 220px; bottom: 15px; }
-      .letter-notes { font-size: 1.4rem; line-height: 2; }
-      #letterBody { padding: 50px 30px 120px 30px; }
+      .letter-notes { font-size: 1.4rem; line-height: 2; margin: 60px 0 40px 0; }
+      .letter-logo { max-width: 200px; margin: 60px auto 40px auto; }
+      #letterBody { padding: 50px 30px 140px 30px; }
     }
   </style>
 </head>
@@ -183,13 +185,19 @@
     <div id="letterBody">
       <h1 class="letter-title">SURAT EKSKLUSIF RHF</h1>
       <div class="letter-code" id="codeDisplay">KODE RAHASIA</div>
+
+      <!-- Catatan diberi jarak besar dari atas -->
       <p class="letter-notes" id="notesDisplay">Selamat, Anda telah membuka undangan eksklusif RHF.</p>
+
+      <!-- Logo dengan jarak besar -->
       <img id="logoDisplay" class="letter-logo" style="display:none;">
+
+      <!-- Tombol Download dengan jarak besar -->
       <a id="downloadBtn" class="download-btn" style="display:none;" target="_blank">DOWNLOAD FILE</a>
     </div>
   </div>
 
-  <!-- Cap Lisensi Fixed di Ujung Bawah -->
+  <!-- Cap Lisensi Fixed di Bawah Layar -->
   <img src="https://i.imgur.com/H4paMmJ.jpeg" alt="Cap Lisensi Resmi RHF" class="license-stamp-fixed">
 
   <script>
