@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Undangan Eksklusif RHF</title>
 
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
@@ -49,7 +48,7 @@
       100% { transform: translateY(-200px) translateX(calc(100vw * (Math.random() - 0.5) * 2)) scale(1.5); opacity: 0; }
     }
 
-    /* Tampilan 1: Tombol KONFIRM Mewah */
+    /* Tampilan 1: Welcome & Tombol KONFIRM */
     #welcomeSection {
       text-align: center;
       z-index: 10;
@@ -76,11 +75,16 @@
     .confirm-button:hover { transform: scale(1.05) translateY(-10px); box-shadow: 0 0 90px #ffd700; }
     .confirm-button h1 { font-family: 'Cinzel', serif; font-weight: 900; font-size: clamp(3rem, 10vw, 5rem); letter-spacing: 12px; color: #ffd700; text-shadow: 0 0 40px #ffd700; }
 
-    /* Loading Biasa (3 detik) */
+    /* Loading Biasa */
     #loadingSection {
       display: none;
       text-align: center;
       z-index: 10;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .loader {
       border: 8px solid #222;
@@ -89,12 +93,11 @@
       width: 100px;
       height: 100px;
       animation: spin 2s linear infinite;
-      margin: 50px auto;
       box-shadow: 0 0 40px rgba(255,215,0,0.6);
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Tampilan 2: Input Kode Super Secure */
+    /* Tampilan 2: Input Kode */
     #accessSection {
       display: none;
       text-align: center;
@@ -106,21 +109,13 @@
       border: 4px solid #ffd700;
       border-radius: 20px;
       box-shadow: 0 0 80px rgba(255,215,0,0.8);
-      animation: securePulse 3s infinite alternate;
     }
-    @keyframes securePulse { from { box-shadow: 0 0 60px rgba(255,215,0,0.6); } to { box-shadow: 0 0 100px rgba(255,215,0,1); } }
-
     #accessSection h2 {
       font-family: 'Cinzel', serif;
       font-size: clamp(2.2rem, 7vw, 3rem);
       letter-spacing: 8px;
       margin-bottom: 30px;
       text-shadow: 0 0 20px #ffd700;
-    }
-    #accessSection p {
-      color: #aaa;
-      font-size: 1.2rem;
-      margin-bottom: 40px;
     }
     input[type="text"] {
       padding: 20px;
@@ -135,11 +130,6 @@
       letter-spacing: 5px;
       box-shadow: 0 0 30px rgba(255,215,0,0.6);
     }
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #fff;
-      box-shadow: 0 0 50px #ffd700;
-    }
     button#submitCode {
       padding: 18px 60px;
       font-size: 1.5rem;
@@ -153,18 +143,16 @@
       cursor: pointer;
       transition: all 0.5s;
     }
-    button#submitCode:hover {
-      background: #ffd700;
-      color: #000;
-      box-shadow: 0 0 60px #ffd700;
-    }
+    button#submitCode:hover { background: #ffd700; color: #000; box-shadow: 0 0 60px #ffd700; }
     .error { color: #ff6b6b; margin-top: 20px; font-size: 1.2rem; display: none; }
 
-    /* Animasi Loading Uter Muter 4 Detik Setelah Kode Benar */
+    /* Loading Sukses 4 Detik (Uter Muter) */
     #successLoading {
       display: none;
       text-align: center;
       z-index: 10;
+      width: 100%;
+      height: 100%;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -209,7 +197,7 @@
   <!-- Cap Lisensi RHF -->
   <img src="https://i.imgur.com/H4paMmJ.jpeg" alt="Cap Lisensi RHF" class="license-stamp">
 
-  <!-- Tampilan 1: Welcome & Tombol KONFIRM -->
+  <!-- Tampilan 1 -->
   <div id="welcomeSection">
     <p class="praise-text">Selamat Datang di Undangan Eksklusif RHF<br>Pengalaman Mewah yang Hanya untuk yang Terpilih</p>
     <div class="confirm-button" id="confirmBtn">
@@ -217,23 +205,22 @@
     </div>
   </div>
 
-  <!-- Loading Biasa (3 detik) -->
+  <!-- Loading Biasa -->
   <div id="loadingSection">
-    <h2 style="font-family: 'Cinzel', serif; font-size: 2.5rem; letter-spacing: 6px;">Memverifikasi...</h2>
+    <h2>Memverifikasi...</h2>
     <div class="loader"></div>
-    <p style="color: #aaa; margin-top: 30px;">Harap tunggu sebentar</p>
   </div>
 
   <!-- Tampilan 2: Input Kode -->
   <div id="accessSection">
     <h2>MASUKKAN KODE AKSES</h2>
-    <p>Proteksi Tingkat Tertinggi – Hanya untuk Tamu Terpilih</p>
+    <p>Proteksi Tingkat Tertinggi</p>
     <input type="text" id="accessCode" placeholder="XXXX-XXXX" maxlength="12" autocomplete="off">
     <button id="submitCode">BUKA SURAT</button>
     <p class="error" id="errorMsg">Kode salah! Silakan coba lagi.</p>
   </div>
 
-  <!-- Loading Sukses (Uter Muter 4 Detik) -->
+  <!-- Loading Sukses 4 Detik -->
   <div id="successLoading">
     <h2>Membuka Surat Eksklusif...</h2>
     <div class="success-spinner"></div>
@@ -257,44 +244,50 @@
     }
     createParticles();
 
-    // Klik tombol KONFIRM → loading → tampilan input kode
-    document.getElementById('confirmBtn').addEventListener('click', () => {
-      document.getElementById('welcomeSection').style.display = 'none';
-      document.getElementById('loadingSection').style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById('loadingSection').style.display = 'none';
-        document.getElementById('accessSection').style.display = 'block';
-        document.getElementById('accessCode').focus();
-      }, 3000);
-    });
+    // Pastikan DOM loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      const welcome = document.getElementById('welcomeSection');
+      const loading = document.getElementById('loadingSection');
+      const access = document.getElementById('accessSection');
+      const successLoading = document.getElementById('successLoading');
 
-    // Check kode (hardcode sementara, nanti ganti dengan Firebase)
-    document.getElementById('submitCode').addEventListener('click', validateCode);
-    document.getElementById('accessCode').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') validateCode();
-    });
-
-    function validateCode() {
-      const input = document.getElementById('accessCode').value.trim().toUpperCase();
-      const validCodes = ["GOLD-2025", "VIP-1234", "EXCL-9999", "TAMU-VIP", "RAHASIA1"]; // Ganti dengan kode dari admin
-
-      if (validCodes.includes(input)) {
-        // Sembunyikan input, tampilkan loading sukses 4 detik
-        document.getElementById('accessSection').style.display = 'none';
-        document.getElementById('successLoading').style.display = 'flex';
-
+      // Klik KONFIRM
+      document.getElementById('confirmBtn').addEventListener('click', () => {
+        welcome.style.display = 'none';
+        loading.style.display = 'flex';
         setTimeout(() => {
-          window.location.href = 'letter.html';
-        }, 4000); // 4 detik animasi uter muter
-      } else {
-        document.getElementById('errorMsg').style.display = 'block';
-        setTimeout(() => {
-          document.getElementById('errorMsg').style.display = 'none';
-          document.getElementById('accessCode').value = '';
+          loading.style.display = 'none';
+          access.style.display = 'block';
           document.getElementById('accessCode').focus();
         }, 3000);
+      });
+
+      // Submit kode
+      document.getElementById('submitCode').addEventListener('click', validateCode);
+      document.getElementById('accessCode').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') validateCode();
+      });
+
+      function validateCode() {
+        const input = document.getElementById('accessCode').value.trim().toUpperCase();
+        const validCodes = ["GOLD-2025", "VIP-1234", "EXCL-9999", "TAMU-VIP", "RAHASIA1"];
+
+        if (validCodes.includes(input)) {
+          access.style.display = 'none';
+          successLoading.style.display = 'flex';
+          setTimeout(() => {
+            window.location.href = 'letter.html';
+          }, 4000);
+        } else {
+          document.getElementById('errorMsg').style.display = 'block';
+          setTimeout(() => {
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('accessCode').value = '';
+            document.getElementById('accessCode').focus();
+          }, 3000);
+        }
       }
-    }
+    });
   </script>
 </body>
 </html>
