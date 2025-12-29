@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confidential Message</title>
+    <title>Access Restricted</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&display=swap');
 
@@ -20,30 +20,88 @@
             color: #d4af37;
         }
 
-        /* Partikel gold misterius */
+        /* Partikel gold halus di halaman confirm */
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 3px;
+            height: 3px;
             background: #d4af37;
             border-radius: 50%;
             pointer-events: none;
             animation: float linear infinite;
+            opacity: 0.6;
         }
         @keyframes float {
             0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
             100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
         }
 
-        /* Amplop mewah */
+        /* Halaman Confirm */
+        #confirmPage {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+            z-index: 10;
+        }
+        #confirmPage h1 {
+            font-size: 48px;
+            letter-spacing: 8px;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+        }
+        #confirmBtn {
+            padding: 20px 50px;
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            font-size: 28px;
+            letter-spacing: 5px;
+            cursor: pointer;
+            transition: 0.6s;
+            text-transform: uppercase;
+        }
+        #confirmBtn:hover {
+            background: #d4af37;
+            color: #000;
+            box-shadow: 0 0 40px #d4af37;
+            transform: scale(1.1);
+        }
+
+        /* Halaman Envelope (awalnya hidden) */
+        #envelopePage {
+            opacity: 0;
+            transition: opacity 2s ease-in 1s;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Saat confirm diklik */
+        .accessed #confirmPage {
+            opacity: 0;
+            transform: translateY(-100%);
+            pointer-events: none;
+        }
+        .accessed #envelopePage {
+            opacity: 1;
+        }
+
+        /* Envelope style (sama seperti sebelumnya, tapi lebih smooth) */
         .envelope-container {
             position: relative;
             width: 450px;
             height: 320px;
         }
-
         .envelope {
             position: absolute;
             width: 100%;
@@ -51,9 +109,8 @@
             background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
             border: 2px solid #d4af37;
             border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
         }
-
         .flap {
             position: absolute;
             top: 0;
@@ -66,7 +123,6 @@
             transition: transform 1.8s ease-in-out;
             clip-path: polygon(0 0, 100% 0, 50% 100%);
         }
-
         .seal {
             position: absolute;
             top: 40%;
@@ -76,14 +132,14 @@
             height: 80px;
             background: radial-gradient(#b8860b, #d4af37);
             border-radius: 50%;
-            box-shadow: 0 0 30px #d4af37;
+            box-shadow: 0 0 40px #d4af37;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 40px;
             z-index: 2;
+            transition: all 1s ease-in-out;
         }
-
         .letter {
             position: absolute;
             top: 15%;
@@ -101,21 +157,10 @@
             transform: translateY(150%);
             transition: all 2s ease-in-out 1s;
         }
-
-        .open .flap {
-            transform: rotateX(180deg);
-        }
-        .open .seal {
-            opacity: 0;
-            transform: scale(0);
-            transition: all 1s ease-in-out;
-        }
-        .open .letter {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .confirm-btn {
+        .open .flap { transform: rotateX(180deg); }
+        .open .seal { opacity: 0; transform: scale(0); }
+        .open .letter { opacity: 1; transform: translateY(0); }
+        .reveal-btn {
             position: absolute;
             bottom: -100px;
             left: 50%;
@@ -130,44 +175,55 @@
             transition: 0.5s;
             text-transform: uppercase;
         }
-        .confirm-btn:hover {
+        .reveal-btn:hover {
             background: #d4af37;
             color: #000;
             box-shadow: 0 0 30px #d4af37;
         }
-
-        .opened .confirm-btn { display: none; }
+        .opened .reveal-btn { display: none; }
     </style>
 </head>
 <body>
-    <!-- Partikel gold (banyak biar misterius) -->
+    <!-- Partikel gold (jalan di kedua halaman) -->
     <script>
-        for(let i=0; i<50; i++){
+        for(let i=0; i<60; i++){
             let p = document.createElement('div');
             p.classList.add('particle');
             p.style.left = Math.random()*100 + 'vw';
-            p.style.animationDuration = (Math.random()*20 + 10) + 's';
+            p.style.animationDuration = (Math.random()*20 + 15) + 's';
             p.style.animationDelay = Math.random()*10 + 's';
             document.body.appendChild(p);
         }
     </script>
 
-    <div class="envelope-container" id="envelopeBox">
-        <div class="envelope">
-            <div class="flap"></div>
-            <div class="seal">✦</div>
-            <div class="letter">
-                <h1>Confidential</h1>
-                <p>Pesan ini ditujukan khusus untuk Anda.</p>
-                <p>[Tulis pesan rahasiamu di sini – misterius, elegan, apa saja yang ingin disampaikan dengan penuh makna.]</p>
-                <p>With utmost discretion,<br>[Namamu atau inisial]</p>
+    <!-- Halaman 1: Confirm -->
+    <div id="confirmPage">
+        <h1>Restricted Access</h1>
+        <button id="confirmBtn">Confirm</button>
+    </div>
+
+    <!-- Halaman 2: Envelope -->
+    <div id="envelopePage">
+        <div class="envelope-container" id="envelopeBox">
+            <div class="envelope">
+                <div class="flap"></div>
+                <div class="seal">✦</div>
+                <div class="letter">
+                    <h1>Confidential</h1>
+                    <p>Pesan ini ditujukan khusus untuk Anda.</p>
+                    <p>[Ganti dengan pesan rahasiamu yang panjang dan misterius di sini]</p>
+                    <p>With utmost discretion,<br>R.</p>
+                </div>
             </div>
+            <button class="reveal-btn" id="revealBtn">Reveal Message</button>
         </div>
-        <button class="confirm-btn" id="openBtn">Reveal Message</button>
     </div>
 
     <script>
-        document.getElementById('openBtn').addEventListener('click', () => {
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            document.body.classList.add('accessed');
+        });
+        document.getElementById('revealBtn').addEventListener('click', () => {
             document.getElementById('envelopeBox').classList.add('open', 'opened');
         });
     </script>
