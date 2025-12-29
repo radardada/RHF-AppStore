@@ -9,195 +9,41 @@
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; color: #d4af37; overflow: hidden; position: relative; }
 
-    body {
-      height: 100vh;
-      background: #000000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Montserrat', sans-serif;
-      color: #d4af37;
-      overflow: hidden;
-      position: relative;
-    }
+    .particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+    .particle { position: absolute; background: radial-gradient(circle, #ffd700, rgba(255,215,0,0.8)); border-radius: 50%; opacity: 0; box-shadow: 0 0 30px #ffd700; animation: floatWide 30s infinite linear; }
+    @keyframes floatWide { 0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity: 0; } 10% { opacity: 0.8; } 50% { opacity: 1; } 90% { opacity: 0.6; } 100% { transform: translateY(-200px) translateX(calc(100vw * (Math.random() - 0.5) * 2)) scale(1.5); opacity: 0; } }
 
-    /* Partikel Emas Mewah */
-    .particles {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .particle {
-      position: absolute;
-      background: radial-gradient(circle, #ffd700, rgba(255,215,0,0.8));
-      border-radius: 50%;
-      opacity: 0;
-      box-shadow: 0 0 30px #ffd700;
-      animation: floatWide 30s infinite linear;
-    }
-    @keyframes floatWide {
-      0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity: 0; }
-      10% { opacity: 0.8; }
-      50% { opacity: 1; }
-      90% { opacity: 0.6; }
-      100% { transform: translateY(-200px) translateX(calc(100vw * (Math.random() - 0.5) * 2)) scale(1.5); opacity: 0; }
-    }
-
-    /* Tampilan 1: Welcome & Tombol KONFIRM */
-    #welcomeSection {
-      text-align: center;
-      z-index: 10;
-      max-width: 90%;
-    }
-    .praise-text {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.2rem, 4vw, 2rem);
-      letter-spacing: 2px;
-      color: #ffd700;
-      text-shadow: 0 0 20px #ffd700;
-      margin-bottom: 60px;
-      line-height: 1.5;
-    }
-    .confirm-button {
-      background: linear-gradient(145deg, #111, #000);
-      border: 4px solid #ffd700;
-      border-radius: 50px;
-      padding: 30px 120px;
-      box-shadow: 0 0 60px rgba(255,215,0,0.8), inset 0 0 30px rgba(255,215,0,0.3), 0 20px 50px rgba(0,0,0,0.9);
-      transition: all 0.5s ease;
-      cursor: pointer;
-    }
+    #welcomeSection { text-align: center; z-index: 10; max-width: 90%; }
+    .praise-text { font-family: 'Playfair Display', serif; font-size: clamp(1.2rem, 4vw, 2rem); letter-spacing: 2px; color: #ffd700; text-shadow: 0 0 20px #ffd700; margin-bottom: 60px; line-height: 1.5; }
+    .confirm-button { background: linear-gradient(145deg, #111, #000); border: 4px solid #ffd700; border-radius: 50px; padding: 30px 120px; box-shadow: 0 0 60px rgba(255,215,0,0.8), inset 0 0 30px rgba(255,215,0,0.3), 0 20px 50px rgba(0,0,0,0.9); transition: all 0.5s ease; cursor: pointer; }
     .confirm-button:hover { transform: scale(1.05) translateY(-10px); box-shadow: 0 0 90px #ffd700; }
     .confirm-button h1 { font-family: 'Cinzel', serif; font-weight: 900; font-size: clamp(3rem, 10vw, 5rem); letter-spacing: 12px; color: #ffd700; text-shadow: 0 0 40px #ffd700; }
 
-    /* Loading Biasa */
-    #loadingSection {
-      display: none;
-      text-align: center;
-      z-index: 10;
-      width: 100%;
-      height: 100%;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .loader {
-      border: 8px solid #222;
-      border-top: 8px solid #ffd700;
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      animation: spin 2s linear infinite;
-      box-shadow: 0 0 40px rgba(255,215,0,0.6);
-    }
+    #loadingSection { display: none; text-align: center; z-index: 10; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; }
+    .loader { border: 8px solid #222; border-top: 8px solid #ffd700; border-radius: 50%; width: 100px; height: 100px; animation: spin 2s linear infinite; box-shadow: 0 0 40px rgba(255,215,0,0.6); }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Tampilan 2: Input Kode */
-    #accessSection {
-      display: none;
-      text-align: center;
-      z-index: 10;
-      width: 90%;
-      max-width: 500px;
-      padding: 50px 30px;
-      background: rgba(0,0,0,0.9);
-      border: 4px solid #ffd700;
-      border-radius: 20px;
-      box-shadow: 0 0 80px rgba(255,215,0,0.8);
-    }
-    #accessSection h2 {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(2.2rem, 7vw, 3rem);
-      letter-spacing: 8px;
-      margin-bottom: 30px;
-      text-shadow: 0 0 20px #ffd700;
-    }
-    input[type="text"] {
-      padding: 20px;
-      font-size: 1.4rem;
-      width: 100%;
-      max-width: 350px;
-      border: 3px solid #ffd700;
-      background: #111;
-      color: #ffd700;
-      text-align: center;
-      border-radius: 15px;
-      letter-spacing: 5px;
-      box-shadow: 0 0 30px rgba(255,215,0,0.6);
-    }
-    button#submitCode {
-      padding: 18px 60px;
-      font-size: 1.5rem;
-      background: transparent;
-      border: 4px solid #ffd700;
-      color: #ffd700;
-      border-radius: 20px;
-      margin-top: 40px;
-      letter-spacing: 5px;
-      font-family: 'Cinzel', serif;
-      cursor: pointer;
-      transition: all 0.5s;
-    }
+    #accessSection { display: none; text-align: center; z-index: 10; width: 90%; max-width: 500px; padding: 50px 30px; background: rgba(0,0,0,0.9); border: 4px solid #ffd700; border-radius: 20px; box-shadow: 0 0 80px rgba(255,215,0,0.8); }
+    #accessSection h2 { font-family: 'Cinzel', serif; font-size: clamp(2.2rem, 7vw, 3rem); letter-spacing: 8px; margin-bottom: 30px; text-shadow: 0 0 20px #ffd700; }
+    input[type="text"] { padding: 20px; font-size: 1.4rem; width: 100%; max-width: 350px; border: 3px solid #ffd700; background: #111; color: #ffd700; text-align: center; border-radius: 15px; letter-spacing: 5px; box-shadow: 0 0 30px rgba(255,215,0,0.6); }
+    button#submitCode { padding: 18px 60px; font-size: 1.5rem; background: transparent; border: 4px solid #ffd700; color: #ffd700; border-radius: 20px; margin-top: 40px; letter-spacing: 5px; font-family: 'Cinzel', serif; cursor: pointer; transition: all 0.5s; }
     button#submitCode:hover { background: #ffd700; color: #000; box-shadow: 0 0 60px #ffd700; }
     .error { color: #ff6b6b; margin-top: 20px; font-size: 1.2rem; display: none; }
 
-    /* Loading Sukses 4 Detik (Uter Muter) */
-    #successLoading {
-      display: none;
-      text-align: center;
-      z-index: 10;
-      width: 100%;
-      height: 100%;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    #successLoading h2 {
-      font-family: 'Cinzel', serif;
-      font-size: 2.5rem;
-      margin-bottom: 40px;
-      letter-spacing: 6px;
-      text-shadow: 0 0 30px #ffd700;
-    }
-    .success-spinner {
-      border: 10px solid #222;
-      border-top: 10px solid #ffd700;
-      border-radius: 50%;
-      width: 120px;
-      height: 120px;
-      animation: spin 1.5s linear infinite;
-      box-shadow: 0 0 60px rgba(255,215,0,0.8);
-    }
+    #successLoading { display: none; text-align: center; z-index: 10; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; }
+    #successLoading h2 { font-family: 'Cinzel', serif; font-size: 2.5rem; margin-bottom: 40px; letter-spacing: 6px; text-shadow: 0 0 30px #ffd700; }
+    .success-spinner { border: 10px solid #222; border-top: 10px solid #ffd700; border-radius: 50%; width: 120px; height: 120px; animation: spin 1.5s linear infinite; box-shadow: 0 0 60px rgba(255,215,0,0.8); }
 
-    /* Cap Lisensi RHF */
-    .license-stamp {
-      position: absolute;
-      bottom: 30px;
-      right: 30px;
-      width: 180px;
-      opacity: 0.7;
-      pointer-events: none;
-      filter: drop-shadow(0 0 20px #ffd700);
-    }
-    @media (max-width: 480px) {
-      .license-stamp { width: 120px; bottom: 20px; right: 20px; }
-    }
+    .license-stamp { position: absolute; bottom: 30px; right: 30px; width: 180px; opacity: 0.7; pointer-events: none; filter: drop-shadow(0 0 20px #ffd700); }
   </style>
 </head>
 <body>
 
-  <!-- Partikel Emas -->
   <div class="particles" id="particles"></div>
-
-  <!-- Cap Lisensi RHF -->
   <img src="https://i.imgur.com/H4paMmJ.jpeg" alt="Cap Lisensi RHF" class="license-stamp">
 
-  <!-- Tampilan 1 -->
   <div id="welcomeSection">
     <p class="praise-text">Selamat Datang di Undangan Eksklusif RHF<br>Pengalaman Mewah yang Hanya untuk yang Terpilih</p>
     <div class="confirm-button" id="confirmBtn">
@@ -205,13 +51,11 @@
     </div>
   </div>
 
-  <!-- Loading Biasa -->
   <div id="loadingSection">
     <h2>Memverifikasi...</h2>
     <div class="loader"></div>
   </div>
 
-  <!-- Tampilan 2: Input Kode -->
   <div id="accessSection">
     <h2>MASUKKAN KODE AKSES</h2>
     <p>Proteksi Tingkat Tertinggi</p>
@@ -220,14 +64,29 @@
     <p class="error" id="errorMsg">Kode salah! Silakan coba lagi.</p>
   </div>
 
-  <!-- Loading Sukses 4 Detik -->
   <div id="successLoading">
     <h2>Membuka Surat Eksklusif...</h2>
     <div class="success-spinner"></div>
   </div>
 
-  <script>
-    // Generate Partikel
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyALIhKFz4bpOPmES6t2fAdx8VMPP0ye1wc",
+      authDomain: "rhf-resmi.firebaseapp.com",
+      databaseURL: "https://rhf-resmi-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "rhf-resmi",
+      storageBucket: "rhf-resmi.firebasestorage.app",
+      messagingSenderId: "313439235544",
+      appId: "1:313439235544:web:b19a2ad538e34c1fe516ad"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const codesRef = ref(db, 'accessCodes');
+
     function createParticles() {
       const container = document.getElementById('particles');
       for (let i = 0; i < 100; i++) {
@@ -244,49 +103,66 @@
     }
     createParticles();
 
-    // Pastikan DOM loaded
-    document.addEventListener('DOMContentLoaded', () => {
-      const welcome = document.getElementById('welcomeSection');
-      const loading = document.getElementById('loadingSection');
-      const access = document.getElementById('accessSection');
-      const successLoading = document.getElementById('successLoading');
+    const welcome = document.getElementById('welcomeSection');
+    const loading = document.getElementById('loadingSection');
+    const access = document.getElementById('accessSection');
+    const successLoading = document.getElementById('successLoading');
+    const errorMsg = document.getElementById('errorMsg');
 
-      // Klik KONFIRM
-      document.getElementById('confirmBtn').addEventListener('click', () => {
-        welcome.style.display = 'none';
-        loading.style.display = 'flex';
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+      welcome.style.display = 'none';
+      loading.style.display = 'flex';
+      setTimeout(() => {
+        loading.style.display = 'none';
+        access.style.display = 'block';
+        document.getElementById('accessCode').focus();
+      }, 3000);
+    });
+
+    async function validateCode() {
+      const input = document.getElementById('accessCode').value.trim().toUpperCase();
+
+      try {
+        const snapshot = await get(codesRef);
+        if (snapshot.exists()) {
+          const codes = snapshot.val();
+          let valid = false;
+          let currentCodeData = null;
+
+          Object.values(codes).forEach(item => {
+            if (item.code && item.code.toUpperCase() === input) {
+              valid = true;
+              currentCodeData = item;
+            }
+          });
+
+          if (valid) {
+            localStorage.setItem('currentCodeData', JSON.stringify(currentCodeData));
+            access.style.display = 'none';
+            successLoading.style.display = 'flex';
+            setTimeout(() => {
+              window.location.href = 'letter.html';
+            }, 4000);
+            return;
+          }
+        }
+        // Jika tidak valid
+        errorMsg.style.display = 'block';
         setTimeout(() => {
-          loading.style.display = 'none';
-          access.style.display = 'block';
+          errorMsg.style.display = 'none';
+          document.getElementById('accessCode').value = '';
           document.getElementById('accessCode').focus();
         }, 3000);
-      });
-
-      // Submit kode
-      document.getElementById('submitCode').addEventListener('click', validateCode);
-      document.getElementById('accessCode').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') validateCode();
-      });
-
-      function validateCode() {
-        const input = document.getElementById('accessCode').value.trim().toUpperCase();
-        const validCodes = ["GOLD-2025", "VIP-1234", "EXCL-9999", "TAMU-VIP", "RAHASIA1"];
-
-        if (validCodes.includes(input)) {
-          access.style.display = 'none';
-          successLoading.style.display = 'flex';
-          setTimeout(() => {
-            window.location.href = 'letter.html';
-          }, 4000);
-        } else {
-          document.getElementById('errorMsg').style.display = 'block';
-          setTimeout(() => {
-            document.getElementById('errorMsg').style.display = 'none';
-            document.getElementById('accessCode').value = '';
-            document.getElementById('accessCode').focus();
-          }, 3000);
-        }
+      } catch (err) {
+        console.error(err);
+        errorMsg.textContent = 'Error koneksi Firebase!';
+        errorMsg.style.display = 'block';
       }
+    }
+
+    document.getElementById('submitCode').addEventListener('click', validateCode);
+    document.getElementById('accessCode').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') validateCode();
     });
   </script>
 </body>
