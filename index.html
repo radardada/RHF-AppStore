@@ -3,79 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Undangan Eksklusif</title>
-  
+  <title>Undangan Eksklusif RHF</title>
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
-  
+
+  <!-- Firebase SDK (hanya database) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; color: #d4af37; overflow: hidden; position: relative; }
 
-    body {
-      height: 100vh;
-      background: #000000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Montserrat', sans-serif;
-      color: #d4af37;
-      overflow: hidden;
-      position: relative;
+    /* Partikel Mewah */
+    .particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+    .particle { position: absolute; background: radial-gradient(circle, #ffd700, rgba(255,215,0,0.8)); border-radius: 50%; opacity: 0; box-shadow: 0 0 30px #ffd700; animation: floatWide 30s infinite linear; }
+    @keyframes floatWide { 0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity: 0; } 10% { opacity: 0.8; } 50% { opacity: 1; } 90% { opacity: 0.6; } 100% { transform: translateY(-200px) translateX(calc(100vw * (Math.random() - 0.5) * 2)) scale(1.5); opacity: 0; } }
+
+    /* Tampilan 1: Tulisan Memuji & Tombol Lonjong Mewah */
+    #welcomeSection {
+      text-align: center;
+      z-index: 10;
+      max-width: 90%;
     }
-
-    /* Partikel Emas Diperluas */
-    .particles { /* ... sama seperti versi sebelumnya ... */ }
-
-    /* ... (style tombol CONFIRM, teks, loading, form tetap sama seperti versi terakhir) ... */
-
-    /* Overlay Cap Lisensi RHF - Paling pas di bottom-right */
-    .license-stamp {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      width: 150px; /* Sesuaikan ukuran */
-      opacity: 0.8;
-      z-index: 20;
-      pointer-events: none; /* Agar tidak ganggu klik */
-      filter: drop-shadow(0 0 15px rgba(255,215,0,0.8));
-      animation: fadeInStamp 2s ease;
+    .praise-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      letter-spacing: 2px;
+      color: #ffd700;
+      text-shadow: 0 0 20px #ffd700;
+      margin-bottom: 60px;
+      line-height: 1.5;
     }
-    @keyframes fadeInStamp {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 0.8; transform: scale(1); }
+    .confirm-button {
+      background: linear-gradient(145deg, #111, #000);
+      border: 4px solid #ffd700;
+      border-radius: 50px; /* Lonjong oval super elegan */
+      padding: 30px 120px;
+      box-shadow: 0 0 60px rgba(255,215,0,0.8), inset 0 0 30px rgba(255,215,0,0.3), 0 20px 50px rgba(0,0,0,0.9);
+      transition: all 0.5s ease;
+      cursor: pointer;
+      margin-bottom: 50px;
     }
+    .confirm-button:hover { transform: scale(1.05) translateY(-10px); box-shadow: 0 0 90px #ffd700; border-color: #fff; }
+    .confirm-button h1 { font-family: 'Cinzel', serif; font-weight: 900; font-size: clamp(3rem, 10vw, 5rem); letter-spacing: 12px; color: #ffd700; text-shadow: 0 0 40px #ffd700; }
 
-    @media (max-width: 480px) {
-      .license-stamp {
-        width: 100px;
-        bottom: 10px;
-        right: 10px;
-      }
-    }
+    /* Tampilan 2: Input Kode Super Ketat & Secure */
+    #accessSection { display: none; text-align: center; width: 90%; max-width: 500px; padding: 40px; background: rgba(0,0,0,0.9); border: 3px solid #ffd700; border-radius: 20px; box-shadow: 0 0 50px rgba(255,215,0,0.6), inset 0 0 20px rgba(255,215,0,0.2); animation: secureGlow 2s infinite alternate; }
+    @keyframes secureGlow { from { box-shadow: 0 0 50px rgba(255,215,0,0.6); } to { box-shadow: 0 0 80px rgba(255,215,0,1); } }
+    #accessSection h2 { font-family: 'Cinzel', serif; font-size: clamp(2rem, 6vw, 2.8rem); letter-spacing: 6px; text-shadow: 0 0 20px #ffd700; }
+    #accessSection p { color: #aaa; font-size: clamp(1rem, 3.5vw, 1.2rem); margin: 20px 0; }
+    input[type="text"] { padding: 18px; font-size: 1.3rem; width: 100%; max-width: 320px; border: 2px solid #ffd700; background: #111; color: #ffd700; text-align: center; border-radius: 12px; letter-spacing: 4px; box-shadow: 0 0 25px rgba(255,215,0,0.6); transition: all 0.4s; }
+    input[type="text"]:focus { border-color: #fff; box-shadow: 0 0 40px #ffd700; }
+    button { padding: 16px 50px; font-size: 1.4rem; background: transparent; border: 3px solid #ffd700; color: #ffd700; border-radius: 15px; margin-top: 30px; letter-spacing: 4px; font-family: 'Cinzel', serif; transition: all 0.5s; }
+    button:hover { background: #ffd700; color: #000; box-shadow: 0 0 50px #ffd700; }
+
+    /* Loading */
+    #loadingSection { /* sama seperti sebelumnya */ }
+
+    /* Cap Lisensi RHF (tanpa storage, pakai HTTPS link) */
+    .license-stamp { position: absolute; bottom: 30px; right: 30px; width: 180px; opacity: 0.7; z-index: 20; pointer-events: none; filter: drop-shadow(0 0 20px #ffd700); animation: fadeInStamp 3s ease; }
+    @keyframes fadeInStamp { from { opacity: 0; transform: scale(0.8); } to { opacity: 0.7; transform: scale(1); } }
   </style>
 </head>
 <body>
 
-  <!-- Partikel Emas -->
+  <!-- Partikel Mewah -->
   <div class="particles" id="particles"></div>
 
-  <!-- Overlay Cap Lisensi RHF dari Link HTTPS -->
-  <img src="https://example.com/cap-lisensi-rhf.png" alt="Cap Lisensi RHF" class="license-stamp">
+  <!-- Cap Lisensi Resmi RHF dari HTTPS -->
+  <img src="https://i.imgur.com/H4paMmJ.jpeg" alt="Cap Lisensi RHF" class="license-stamp">
 
-  <!-- Tombol Confirm & elemen lain (sama seperti versi sebelumnya) -->
-  <div id="clickArea">
-    <div class="confirm-button">
-      <h1>CONFIRM</h1>
+  <!-- Tampilan 1: Tulisan Memuji & Tombol Konfirm Mewah -->
+  <div id="welcomeSection">
+    <p class="praise-text">Selamat Datang di Undangan Eksklusif RHF – Pengalaman Mewah yang Hanya untuk yang Terpilih, Di mana Kemewahan Bertemu Rahasia Tertinggi</p>
+    <div class="confirm-button" id="confirmBtn">
+      <h1>KONFIRM</h1>
     </div>
-    <div class="confirm-desc">UNTUK MEMBUKA<br>UNDANGAN EKSKLUSIF</div>
-    <p class="subtitle">Klik tombol di atas untuk<br>melanjutkan</p>
   </div>
 
-  <!-- Loading & Form (sama) -->
+  <!-- Loading -->
+  <div id="loadingSection" style="display: none;">
+    <h2>Memverifikasi...</h2>
+    <div class="loader"></div>
+  </div>
+
+  <!-- Tampilan 2: Input Kode Secure -->
+  <div id="accessSection" style="display: none;">
+    <h2>MASUKKAN KODE AKSES</h2>
+    <p>Input Kode Super Ketat & Dilindungi</p>
+    <input type="text" id="accessCode" placeholder="XXXX-XXXX" maxlength="12">
+    <button id="submitCode">BUKA SURAT</button>
+    <p class="error" id="errorMsg" style="display: none;">Kode salah!</p>
+  </div>
 
   <script>
-    /* Script partikel & logic tetap sama */
+    const firebaseConfig = { /* config kamu */ };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const codesRef = db.ref('accessCodes');
+
+    function createParticles() { /* sama */ }
+    createParticles();
+
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+      document.getElementById('welcomeSection').style.display = 'none';
+      document.getElementById('loadingSection').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('loadingSection').style.display = 'none';
+        document.getElementById('accessSection').style.display = 'block';
+        document.getElementById('accessCode').focus();
+      }, 3000);
+    });
+
+    document.getElementById('submitCode').addEventListener('click', checkCode);
+    document.getElementById('accessCode').addEventListener('keypress', (e) => if (e.key === 'Enter') checkCode(); );
+
+    function checkCode() {
+      const input = document.getElementById('accessCode').value.trim().toUpperCase();
+      codesRef.once('value').then(snap => {
+        const codes = snap.val() || {};
+        const isValid = Object.values(codes).some(item => item.code === input);
+        if (isValid) {
+          localStorage.setItem('currentCode', input); // Simpan kode untuk letter.html
+          window.location.href = 'letter.html';
+        } else {
+          document.getElementById('errorMsg').style.display = 'block';
+          setTimeout(() => document.getElementById('errorMsg').style.display = 'none', 3000);
+        }
+      });
+    }
   </script>
 </body>
-</html>>
-h
+</html>
