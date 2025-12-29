@@ -1,368 +1,57 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Premium Letter - Buat Surat Profesional</title>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Quill Editor -->
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <style>
-        .premium-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .gold-text {
-            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
-        }
-        .letter-paper {
-            background: linear-gradient(0deg, transparent 24px, #f0f0f0 25px), 
-                        linear-gradient(90deg, transparent 24px, #f0f0f0 25px);
-            background-size: 25px 25px;
-            background-color: white;
-        }
-        .shadow-premium {
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Undangan Eksklusif</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      color: #d4af37;
+    }
+    .container {
+      text-align: center;
+      cursor: pointer;
+    }
+    h1 {
+      font-size: 4rem;
+      letter-spacing: 8px;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+      animation: glow 3s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(212,175,55,0.5); }
+      to { text-shadow: 0 0 40px rgba(212,175,55,0.8); }
+    }
+    p {
+      font-size: 1.5rem;
+      margin-top: 50px;
+      color: #aaa;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-50">
-    <!-- Firebase Config -->
-    <script src="firebase-config.js"></script>
+<body>
+  <div class="container" id="clickArea">
+    <h1>CONFIRM 2 KLIK<br>UNTUK MEMBUKA SURAT</h1>
+    <p id="counter">Klik remaining: 2</p>
+  </div>
 
-    <!-- Navigation -->
-    <nav class="premium-gradient shadow-lg">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-crown text-yellow-300 text-2xl"></i>
-                    <h1 class="text-2xl font-bold text-white">Super Premium <span class="gold-text">Letter</span></h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="admin.html" class="text-white hover:text-yellow-300 transition">
-                        <i class="fas fa-user-shield mr-1"></i> Admin
-                    </a>
-                    <button id="loginBtn" class="bg-white text-purple-700 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50 transition">
-                        <i class="fas fa-sign-in-alt mr-1"></i> Login
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container mx-auto px-4 py-8">
-        <!-- Hero Section -->
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">Buat Surat <span class="gold-text">Super Premium</span> dengan Mudah</h2>
-            <p class="text-gray-600 text-lg max-w-3xl mx-auto">Desain surat profesional dengan template elegan, simpan ke cloud, dan kelola dengan sistem admin canggih.</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Panel - Form Surat -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl shadow-premium p-6 mb-8">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                        <i class="fas fa-edit text-purple-600 mr-2"></i> Buat Surat Baru
-                    </h3>
-                    
-                    <div class="space-y-6">
-                        <!-- Basic Info -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Pengirim</label>
-                                <input type="text" id="sender" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Nama/Instansi Pengirim">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Penerima</label>
-                                <input type="text" id="receiver" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Nama/Instansi Penerima">
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Tanggal Surat</label>
-                                <input type="date" id="letterDate" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Nomor Surat</label>
-                                <input type="text" id="letterNumber" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Nomor Surat">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Perihal</label>
-                                <input type="text" id="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Perihal Surat">
-                            </div>
-                        </div>
-                        
-                        <!-- Template Selection -->
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Pilih Template Surat</label>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div class="template-option border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-purple-500 transition" data-template="formal">
-                                    <i class="fas fa-briefcase text-3xl text-gray-700 mb-2"></i>
-                                    <p class="font-medium">Formal</p>
-                                </div>
-                                <div class="template-option border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-purple-500 transition" data-template="business">
-                                    <i class="fas fa-building text-3xl text-gray-700 mb-2"></i>
-                                    <p class="font-medium">Bisnis</p>
-                                </div>
-                                <div class="template-option border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-purple-500 transition" data-template="personal">
-                                    <i class="fas fa-user-tie text-3xl text-gray-700 mb-2"></i>
-                                    <p class="font-medium">Personal</p>
-                                </div>
-                                <div class="template-option border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-purple-500 transition" data-template="government">
-                                    <i class="fas fa-landmark text-3xl text-gray-700 mb-2"></i>
-                                    <p class="font-medium">Pemerintahan</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Editor -->
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Isi Surat</label>
-                            <div id="editor" class="h-96"></div>
-                        </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="flex flex-wrap gap-4 pt-6">
-                            <button id="previewBtn" class="premium-gradient text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition flex items-center">
-                                <i class="fas fa-eye mr-2"></i> Preview Surat
-                            </button>
-                            <button id="saveBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition flex items-center">
-                                <i class="fas fa-save mr-2"></i> Simpan ke Cloud
-                            </button>
-                            <button id="printBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center">
-                                <i class="fas fa-print mr-2"></i> Cetak Surat
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Recent Letters -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                        <i class="fas fa-history text-purple-600 mr-2"></i> Surat Terbaru
-                    </h3>
-                    <div id="recentLetters" class="space-y-4">
-                        <!-- Letters will be loaded here -->
-                        <div class="text-center py-8 text-gray-500">
-                            <i class="fas fa-envelope-open-text text-4xl mb-4"></i>
-                            <p>Belum ada surat. Buat surat pertama Anda!</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Right Panel - Preview & Stats -->
-            <div class="space-y-8">
-                <!-- Preview -->
-                <div class="bg-white rounded-2xl shadow-premium overflow-hidden">
-                    <div class="premium-gradient p-4">
-                        <h3 class="text-xl font-bold text-white flex items-center">
-                            <i class="fas fa-file-alt mr-2"></i> Preview Surat
-                        </h3>
-                    </div>
-                    <div class="p-6">
-                        <div id="letterPreview" class="letter-paper p-8 min-h-[500px] rounded-lg border">
-                            <div class="text-center mb-8">
-                                <div class="flex justify-center items-center mb-4">
-                                    <i class="fas fa-crown text-3xl text-yellow-500 mr-3"></i>
-                                    <h2 class="text-3xl font-bold gold-text">SURAT RESMI</h2>
-                                </div>
-                                <p class="text-gray-600">Template premium dengan desain elegan</p>
-                            </div>
-                            <div id="previewContent" class="text-gray-800">
-                                <!-- Preview content will be inserted here -->
-                                <p class="mb-4">Isi surat akan muncul di sini setelah Anda mengetik di editor.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Stats -->
-                <div class="glass-effect rounded-2xl p-6">
-                    <h3 class="text-xl font-bold text-white mb-4 flex items-center">
-                        <i class="fas fa-chart-bar mr-2"></i> Statistik
-                    </h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-white rounded-xl p-4 text-center">
-                            <div class="text-3xl font-bold text-purple-600" id="totalLetters">0</div>
-                            <div class="text-gray-600 text-sm">Total Surat</div>
-                        </div>
-                        <div class="bg-white rounded-xl p-4 text-center">
-                            <div class="text-3xl font-bold text-green-600" id="todayLetters">0</div>
-                            <div class="text-gray-600 text-sm">Hari Ini</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Features -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">Fitur Premium</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            <span>Simpan otomatis ke cloud</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            <span>Template premium</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            <span>Editor teks kaya (Rich Text)</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            <span>Sistem admin terpadu</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            <span>Ekspor ke PDF & cetak</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-2xl p-8 w-full max-w-md">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">Login Admin</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-gray-700 mb-2">Email</label>
-                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg" placeholder="admin@example.com">
-                </div>
-                <div>
-                    <label class="block text-gray-700 mb-2">Password</label>
-                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg" placeholder="Password">
-                </div>
-                <div class="flex justify-between items-center pt-4">
-                    <button id="closeLoginModal" class="text-gray-600 hover:text-gray-800">Batal</button>
-                    <button id="submitLogin" class="premium-gradient text-white px-6 py-3 rounded-lg font-semibold">Login</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="premium-gradient mt-12 py-8">
-        <div class="container mx-auto px-4 text-center text-white">
-            <p class="mb-4">© 2023 Super Premium Letter. All rights reserved.</p>
-            <p class="text-sm opacity-80">Dibangun dengan Firebase & Teknologi Web Modern</p>
-        </div>
-    </footer>
-
-    <!-- App JavaScript -->
-    <script>
-        // Initialize Quill Editor
-        const quill = new Quill('#editor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'color': [] }, { 'background': [] }],
-                    ['link', 'image'],
-                    ['clean']
-                ]
-            },
-            placeholder: 'Tulis isi surat Anda di sini...'
-        });
-
-        // Firebase Auth & Firestore
-        let currentUser = null;
-        
-        // Initialize Firebase
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        
-        // Auth State Listener
-        auth.onAuthStateChanged((user) => {
-            currentUser = user;
-            const loginBtn = document.getElementById('loginBtn');
-            
-            if (user) {
-                loginBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-1"></i> Logout';
-                loginBtn.onclick = () => auth.signOut();
-                loadRecentLetters();
-                loadStats();
-            } else {
-                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-1"></i> Login';
-                loginBtn.onclick = () => document.getElementById('loginModal').classList.remove('hidden');
-            }
-        });
-        
-        // Login Modal
-        document.getElementById('closeLoginModal').onclick = () => {
-            document.getElementById('loginModal').classList.add('hidden');
-        };
-        
-        document.getElementById('submitLogin').onclick = () => {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    document.getElementById('loginModal').classList.add('hidden');
-                    alert('Login berhasil!');
-                })
-                .catch(error => {
-                    alert('Login gagal: ' + error.message);
-                });
-        };
-        
-        // Template Selection
-        document.querySelectorAll('.template-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.template-option').forEach(opt => {
-                    opt.classList.remove('border-purple-500', 'bg-purple-50');
-                });
-                this.classList.add('border-purple-500', 'bg-purple-50');
-                
-                // Update preview based on template
-                updatePreview();
-            });
-        });
-        
-        // Update preview when editor content changes
-        quill.on('text-change', updatePreview);
-        
-        // Update preview when form inputs change
-        document.getElementById('sender').addEventListener('input', updatePreview);
-        document.getElementById('receiver').addEventListener('input', updatePreview);
-        document.getElementById('subject').addEventListener('input', updatePreview);
-        document.getElementById('letterNumber').addEventListener('input', updatePreview);
-        document.getElementById('letterDate').addEventListener('input', updatePreview);
-        
-        // Set today's date as default
-        document.getElementById('letterDate').valueAsDate = new Date();
-        
-        // Update Preview Function
-        function updatePreview() {
-            const sender = document.getElementById('sender').value || '[Pengirim]';
-            const receiver = document.getElementById('receiver').value || '[Penerima]';
-            const subject = document.getElementById('subject').value || '[Perihal]';
-            const letterNumber = document.getElementById('letterNumber').value || '[Nomor Surat]';
-            const letterDate = document.getElementById('letterDate').value || new Date().toISOString().split('T')[0];
-            
-            const dateObj = new Date(letterDate);
-            const formattedDate = dateObj.toLocaleDateString('id
+  <script>
+    let clicks = 0;
+    document.getElementById('clickArea').addEventListener('click', () => {
+      clicks++;
+      document.getElementById('counter').textContent = `Klik remaining: ${2 - clicks}`;
+      if (clicks >= 2) {
+        window.location.href = 'letter.html';
+      }
+    });
+  </script>
+</body>
+</html>
