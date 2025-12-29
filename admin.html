@@ -113,13 +113,15 @@
       color: #0f0;
       background: rgba(0,255,0,0.1);
       border-radius: 8px;
-      margin-bottom: 20px;
+      margin: 20px auto;
+      max-width: 600px;
     }
 
     .preview-img {
-      max-width: 100px;
+      max-width: 80px;
       margin-top: 10px;
-      border-radius: 5px;
+      border-radius: 8px;
+      border: 1px solid #d4af37;
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
@@ -130,34 +132,30 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
   <script>
-    // Konfigurasi Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyALIhKFz4bpOPmES6t2fAdx8VMPP0ye1wc",
       authDomain: "rhf-resmi.firebaseapp.com",
       projectId: "rhf-resmi",
       storageBucket: "rhf-resmi.firebasestorage.app",
       messagingSenderId: "313439235544",
-      appId: "1:313439235544:web:b19a2ad538e34c1fe516ad",
-      measurementId: "G-LNCVH73P3X"
+      appId: "1:313439235544:web:b19a2ad538e34c1fe516ad"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const storage = firebase.storage();
 
-    // Referensi data
     const configRef = db.ref('config');
     const codesRef = db.ref('accessCodes');
 
     let editingKey = null;
 
-    // Load semua data saat halaman dibuka
     window.onload = () => {
       loadConfig();
       loadCodes();
-      document.getElementById('status').textContent = 'Terhubung ke server — Semua perubahan real-time';
+      document.getElementById('status').textContent = 'Terhubung ke Firebase — Siap digunakan';
     };
 
-    // === KELOLA TEKS & KONFIGURASI ===
+    // Load konfigurasi teks
     function loadConfig() {
       configRef.on('value', (snap) => {
         const data = snap.val() || {};
@@ -182,12 +180,10 @@
         errorMessage: document.getElementById('errorMessage').value,
         updatedAt: Date.now()
       };
-      configRef.set(config).then(() => {
-        alert('✅ Konfigurasi teks berhasil disimpan!');
-      });
+      configRef.set(config).then(() => alert('Konfigurasi teks berhasil disimpan!'));
     }
 
-    // === KELOLA KODE AKSES ===
+    // Load daftar kode
     function loadCodes() {
       codesRef.on('value', (snap) => {
         const codes = snap.val() || {};
@@ -197,13 +193,13 @@
           const item = codes[key];
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td>${item.code}</td>
+            <td><strong>${item.code || '-'}</strong></td>
             <td>${item.notes || '-'}</td>
-            <td><a href="\( {item.download_link || '#'}" target="_blank"> \){item.download_link ? 'Link' : '-'}</a></td>
+            <td>${item.download_link ? '<a href="' + item.download_link + '" target="_blank">Link</a>' : '-'}</td>
             <td>${item.logo_url ? '<img src="' + item.logo_url + '" class="preview-img">' : '-'}</td>
             <td>${item.license_stamp_url ? '<img src="' + item.license_stamp_url + '" class="preview-img">' : '-'}</td>
             <td class="actions">
-              <button class="btn" onclick="editCode('\( {key}', ' \){item.code}', '\( {item.notes || ''}', ' \){item.download_link || ''}', '\( {item.logo_url || ''}', ' \){item.license_stamp_url || ''}')">EDIT</button>
+              <button class="btn" onclick="editCode('${key}')">EDIT</button>
               <button class="btn btn-danger" onclick="deleteCode('${key}')">HAPUS</button>
             </td>
           `;
@@ -212,17 +208,21 @@
       });
     }
 
-    function editCode(key, code, notes, download_link, logo_url, license_stamp_url) {
-      editingKey = key;
-      document.getElementById('newCode').value = code;
-      document.getElementById('notes').value = notes;
-      document.getElementById('downloadLink').value = download_link;
-      // Untuk image, tidak bisa prefill file input, tapi tampil preview jika ada
-      document.getElementById('logoPreview').innerHTML = logo_url ? `<img src="${logo_url}" class="preview-img">` : '';
-      document.getElementById('licensePreview').innerHTML = license_stamp_url ? `<img src="${license_stamp_url}" class="preview-img">` : '';
-      document.getElementById('addButton').textContent = 'UPDATE KODE';
+    // Edit kode
+    function editCode(key) {
+      codesRef.child(key).once('value').then(snap => {
+        const item = snap.val();
+        editingKey = key;
+        document.getElementById('newCode').value = item.code || '';
+        document.getElementById('notes').value = item.notes || '';
+        document.getElementById('downloadLink').value = item.download_link || '';
+        document.getElementById('logoPreview').innerHTML = item.logo_url ? `<img src="${item.logo_url}" class="preview-img">` : '';
+        document.getElementById('licensePreview').innerHTML = item.license_stamp_url ? `<img src="${item.license_stamp_url}" class="preview-img">` : '';
+        document.getElementById('addButton').textContent = 'UPDATE KODE';
+      });
     }
 
+    // Tambah atau Update Kode
     async function addOrUpdateCode() {
       const code = document.getElementById('newCode').value.trim().toUpperCase();
       const notes = document.getElementById('notes').value.trim();
@@ -231,46 +231,46 @@
       const licenseFile = document.getElementById('licenseFile').files[0];
 
       if (!code) {
-        alert('Masukkan kode akses terlebih dahulu!');
+        alert('Kode akses wajib diisi!');
         return;
       }
 
-      let logoUrl = document.getElementById('logoPreview').innerHTML ? document.getElementById('logoPreview').querySelector('img')?.src : null;
-      let licenseUrl = document.getElementById('licensePreview').innerHTML ? document.getElementById('licensePreview').querySelector('img')?.src : null;
+      let logoUrl = document.getElementById('logoPreview').querySelector('img')?.src || null;
+      let licenseUrl = document.getElementById('licensePreview').querySelector('img')?.src || null;
 
-      // Upload logo jika ada file baru
-      if (logoFile) {
-        const logoRef = storage.ref(`logos/\( {Date.now()}_ \){logoFile.name}`);
-        await logoRef.put(logoFile);
-        logoUrl = await logoRef.getDownloadURL();
-      }
+      try {
+        if (logoFile) {
+          const logoRef = storage.ref(`logos/\( {Date.now()}_ \){logoFile.name}`);
+          await logoRef.put(logoFile);
+          logoUrl = await logoRef.getDownloadURL();
+        }
+        if (licenseFile) {
+          const licenseRef = storage.ref(`licenses/\( {Date.now()}_ \){licenseFile.name}`);
+          await licenseRef.put(licenseFile);
+          licenseUrl = await licenseRef.getDownloadURL();
+        }
 
-      // Upload lisensi stamp jika ada file baru (greenscreen background assumed)
-      if (licenseFile) {
-        const licenseRef = storage.ref(`licenses/\( {Date.now()}_ \){licenseFile.name}`);
-        await licenseRef.put(licenseFile);
-        licenseUrl = await licenseRef.getDownloadURL();
-      }
+        const data = {
+          code,
+          notes,
+          download_link: downloadLink || null,
+          logo_url: logoUrl,
+          license_stamp_url: licenseUrl,
+          updatedAt: Date.now()
+        };
 
-      const data = {
-        code,
-        notes,
-        download_link: downloadLink,
-        logo_url: logoUrl || null,
-        license_stamp_url: licenseUrl || null,
-        updatedAt: Date.now()
-      };
+        if (editingKey) {
+          await codesRef.child(editingKey).set(data);
+          alert('Kode berhasil diupdate!');
+        } else {
+          await codesRef.push(data);
+          alert('Kode baru berhasil ditambahkan!');
+        }
 
-      if (editingKey) {
-        codesRef.child(editingKey).set(data).then(() => {
-          resetForm();
-          alert('✅ Kode berhasil diupdate!');
-        });
-      } else {
-        codesRef.push(data).then(() => {
-          resetForm();
-          alert('✅ Kode baru berhasil ditambahkan!');
-        });
+        resetForm();
+      } catch (error) {
+        console.error(error);
+        alert('Gagal menyimpan kode. Cek koneksi atau ukuran file gambar.');
       }
     }
 
@@ -288,18 +288,17 @@
 
     function deleteCode(key) {
       if (confirm('Yakin hapus kode ini?')) {
-        codesRef.child(key).remove().then(() => {
-          alert('Kode berhasil dihapus');
-        });
+        codesRef.child(key).remove().then(() => alert('Kode berhasil dihapus'));
       }
     }
 
-    // Reset semua (opsional)
     function resetAll() {
-      if (confirm('⚠️ YAKIN RESET SEMUA DATA? Ini akan menghapus semua kode dan konfigurasi!')) {
-        configRef.remove();
-        codesRef.remove();
-        alert('Semua data telah direset');
+      if (confirm('YAKIN RESET SEMUA DATA? (Kode + Konfigurasi)')) {
+        if (prompt('Ketik "RESET SEMUA" untuk konfirmasi') === 'RESET SEMUA') {
+          configRef.remove();
+          codesRef.remove();
+          alert('Semua data telah direset');
+        }
       }
     }
   </script>
@@ -308,7 +307,7 @@
 
   <div class="header">
     <h1>ADMIN DASHBOARD</h1>
-    <p>Kelola Undangan Eksklusif Secara Real-Time</p>
+    <p>Kelola Undangan Eksklusif RHF</p>
   </div>
 
   <div id="status" class="status">Memuat...</div>
@@ -317,53 +316,51 @@
 
     <!-- Pengaturan Teks -->
     <div class="card">
-      <h2>Pengaturan Teks & Tampilan</h2>
-      
-      <label>Judul Utama (di halaman awal)</label>
+      <h2>Pengaturan Teks Tampilan</h2>
+      <label>Judul Utama</label>
       <textarea id="mainTitle"></textarea>
 
-      <label>Subtitle (di bawah judul)</label>
+      <label>Subtitle</label>
       <input type="text" id="mainSubtitle">
 
-      <label>Judul Form Kode Akses</label>
+      <label>Judul Form Kode</label>
       <input type="text" id="formTitle">
 
       <label>Deskripsi Form</label>
       <textarea id="formDesc"></textarea>
 
-      <label>Placeholder Input Kode</label>
+      <label>Placeholder Input</label>
       <input type="text" id="inputPlaceholder">
 
       <label>Teks Tombol</label>
       <input type="text" id="buttonText">
 
-      <label>Pesan Error (kode salah)</label>
+      <label>Pesan Error</label>
       <input type="text" id="errorMessage">
 
-      <button class="btn" onclick="saveConfig()" style="width:100%;">SIMPAN SEMUA PERUBAHAN</button>
+      <button class="btn" onclick="saveConfig()" style="width:100%;">SIMPAN TEKS</button>
     </div>
 
     <!-- Kelola Kode Akses -->
     <div class="card">
-      <h2>Kelola Kode Akses</h2>
-      
+      <h2>Kelola Kode Akses Surat</h2>
+
       <label>Kode Akses</label>
-      <input type="text" id="newCode" placeholder="Contoh: VIP-2026" style="text-transform: uppercase;">
+      <input type="text" id="newCode" placeholder="VIP-2026" style="text-transform: uppercase;">
 
       <label>Catatan</label>
-      <textarea id="notes" placeholder="Catatan tambahan untuk kode ini"></textarea>
+      <textarea id="notes" placeholder="Untuk siapa kode ini"></textarea>
 
-      <label>Link Download (akan jadi tombol di surat)</label>
-      <input type="text" id="downloadLink" placeholder="https://example.com/download">
+      <label>Link Download (tombol di surat)</label>
+      <input type="text" id="downloadLink" placeholder="https://...">
 
-      <label>Logo/Gambar</label>
+      <label>Logo / Gambar</label>
       <input type="file" id="logoFile" accept="image/*">
       <div id="logoPreview"></div>
 
-      <label>Lisensi (Cap Khusus RHF - Upload gambar dengan greenscreen background)</label>
+      <label>Cap Lisensi RHF (greenscreen)</label>
       <input type="file" id="licenseFile" accept="image/*">
       <div id="licensePreview"></div>
-      <p style="font-size: 0.9rem; color: #aaa;">Cap ini akan ditempel di bagian bawah surat (letter.html) sebagai overlay transparan.</p>
 
       <button class="btn" id="addButton" onclick="addOrUpdateCode()" style="width:100%;">TAMBAH KODE</button>
 
@@ -372,15 +369,13 @@
           <tr>
             <th>Kode</th>
             <th>Catatan</th>
-            <th>Link Download</th>
+            <th>Download</th>
             <th>Logo</th>
-            <th>Lisensi Cap</th>
+            <th>Cap</th>
             <th>Aksi</th>
           </tr>
         </thead>
-        <tbody id="codesBody">
-          <!-- Diisi otomatis dari Firebase -->
-        </tbody>
+        <tbody id="codesBody"></tbody>
       </table>
 
       <div style="margin-top: 30px; text-align: center;">
@@ -391,4 +386,4 @@
   </div>
 
 </body>
-        </html>
+</html>
