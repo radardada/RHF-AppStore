@@ -3,113 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Surat Resmi Eksklusif</title>
+  <title>Surat Eksklusif RHF</title>
+  
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&q=80') no-repeat center center fixed;
-      background-size: cover;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Crimson Text', serif;
-    }
-    .letter {
-      background: rgba(255, 248, 240, 0.95);
-      width: 90%;
-      max-width: 900px;
-      padding: 80px 100px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-      border: 8px double #d4af37;
-      position: relative;
-      animation: fadeIn 3s ease-in;
-    }
-    .header {
-      text-align: center;
-      border-bottom: 3px solid #d4af37;
-      padding-bottom: 30px;
-      margin-bottom: 50px;
-    }
-    .header h1 {
-      font-size: 3.5rem;
-      color: #1a1a1a;
-      letter-spacing: 5px;
-    }
-    .header p {
-      font-size: 1.4rem;
-      color: #555;
-    }
-    .content {
-      font-size: 1.6rem;
-      line-height: 2.2;
-      color: #333;
-      text-align: justify;
-    }
-    .signature {
-      margin-top: 80px;
-      text-align: right;
-      font-style: italic;
-      font-size: 2rem;
-      color: #d4af37;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(50px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital@0;1&family=Cinzel&display=swap" rel="stylesheet">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyALIhKFz4bpOPmES6t2fAdx8VMPP0ye1wc",
-      authDomain: "rhf-resmi.firebaseapp.com",
-      projectId: "rhf-resmi",
-      storageBucket: "rhf-resmi.firebasestorage.app",
-      messagingSenderId: "313439235544",
-      appId: "1:313439235544:web:b19a2ad538e34c1fe516ad",
-      measurementId: "G-LNCVH73P3X"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const opensRef = db.ref('opens');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { height: 100vh; background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; color: #ffd700; position: relative; overflow: hidden; }
 
-    window.onload = () => {
-      opensRef.transaction(current => (current || 0) + 1);
-    };
-  </script>
+    /* Animasi Membuka Surat Mewah */
+    #letterContainer {
+      width: 80%;
+      max-width: 600px;
+      padding: 40px;
+      background: linear-gradient(to bottom, #111, #000);
+      border: 4px solid #ffd700;
+      border-radius: 20px;
+      box-shadow: 0 0 80px #ffd700;
+      text-align: center;
+      animation: openLetter 2s ease;
+      opacity: 0;
+      transform: scale(0.8) rotate(-5deg);
+    }
+    @keyframes openLetter { 0% { opacity: 0; transform: scale(0.8) rotate(-5deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
+
+    #letterContent {
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      line-height: 1.5;
+      text-shadow: 0 0 10px #ffd700;
+    }
+
+    /* Cap Lisensi RHF */
+    .license-stamp { position: absolute; bottom: 40px; right: 40px; width: 200px; opacity: 0.8; filter: drop-shadow(0 0 20px #ffd700); }
+
+    /* Partikel Mewah (sama seperti index) */
+    .particles { /* sama */ }
+  </style>
 </head>
 <body>
-  <div class="letter">
-    <div class="header">
-      <h1>RHF CAPITAL PARTNERS</h1>
-      <p>Private & Confidential • Jakarta, 29 Desember 2025</p>
-    </div>
-    <div class="content">
-      <p>Yth. Yang Terhormat,</p>
-      
-      <p>Dengan hormat,</p>
-      
-      <p>Saya, sebagai pendiri dan chairman dari RHF Capital Partners — sebuah kelompok investasi global dengan aset di bawah pengelolaan lebih dari USD 47 miliar — ingin menyampaikan undangan pribadi yang sangat eksklusif kepada Anda.</p>
-      
-      <p>Atas rekomendasi dari jaringan terpercaya kami, nama Anda telah terpilih sebagai salah satu dari hanya <strong>27 individu di Asia Tenggara</strong> yang memenuhi kriteria untuk bergabung dalam lingkaran investasi privat kami tahun 2026.</p>
-      
-      <p>Program ini memberikan akses prioritas kepada peluang investasi kelas institusional yang tidak tersedia bagi publik: real estate ikonik di Dubai dan London, venture capital pada perusahaan teknologi generasi berikutnya, serta portofolio aset alternatif dengan proyeksi imbal hasil di atas rata-rata pasar.</p>
-      
-      <p>Keanggotaan ini bersifat <strong>invitation-only</strong> dan tidak dapat diajukan. Apabila Anda berminat, silakan balas surat ini dalam waktu 14 hari ke alamat terenkripsi yang akan kami kirimkan secara terpisah.</p>
-      
-      <p>Kerahasiaan terjamin sepenuhnya.</p>
-      
-      <p>Hormat saya,</p>
-    </div>
-    <div class="signature">
-      Raden Haryo Fadhlurrahman<br>
-      Chairman & Founder<br>
-      RHF Capital Partners
-    </div>
+
+  <!-- Partikel Mewah -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Cap Lisensi -->
+  <img src="https://i.imgur.com/H4paMmJ.jpeg" alt="Cap Lisensi RHF" class="license-stamp">
+
+  <!-- Surat Mewah dengan Animasi Membuka -->
+  <div id="letterContainer">
+    <div id="letterContent">Ini adalah kode surat Anda: <span id="suratCode"></span><br>Surat Eksklusif RHF yang Super Mewah & Rahasia</div>
   </div>
+
+  <script>
+    function createParticles() { /* sama seperti index */ }
+    createParticles();
+
+    const code = localStorage.getItem('currentCode') || 'KODE RAHASIA';
+    document.getElementById('suratCode').textContent = code;
+  </script>
 </body>
 </html>
