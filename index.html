@@ -8,35 +8,36 @@
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/footer.css">
     <style>
-        /* Hero Anda tetap sama */
-        #hero { background: linear-gradient(to bottom, #007bff, #00c6ff, #28a745); color: white; text-align: center; padding: 60px 20px; }
-        #hero h2 { font-size: 48px; margin: 0 0 20px; }
-        #hero p { font-size: 24px; margin: 0 0 20px; opacity: 0.9; }
-        #hero .subtext { font-size: 20px; margin: 20px 0 40px; opacity: 0.9; }
-        #hero input { width: 80%; max-width: 600px; padding: 20px; font-size: 18px; border-radius: 50px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-
-        /* 3 Kolom Kecil Horizontal */
-        .categories { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .category-grid { display: flex; gap: 15px; margin: 20px 0; overflow-x: auto; padding: 10px 0; }
-        .category-card { 
-            background: white; border-radius: 12px; padding: 15px 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-            border-top: 4px solid #007bff; white-space: nowrap; flex-shrink: 0; min-width: 140px; 
-            text-align: center; cursor: pointer; transition: all 0.3s; font-size: 14px; font-weight: 600;
+        /* Hero section dengan gradient biru-hijau */
+        #hero {
+            background: linear-gradient(to bottom, #007bff, #00c6ff, #28a745);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
         }
-        .category-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-        .category-card.games { border-top-color: #ff6b6b; }
-        .category-card.ewallet { border-top-color: #4ecdc4; }
-        .category-card.pulsa { border-top-color: #45b7d1; }
-        
-        /* Items Kecil */
-        .game-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 6px; margin-top: 8px; }
-        .game-item { 
-            background: #f8f9fa; border-radius: 8px; padding: 8px 4px; text-align: center; cursor: pointer; 
-            transition: all 0.3s; border: 2px solid transparent; font-size: 10px; font-weight: 600; height: 90px;
-            display: flex; flex-direction: column; justify-content: center;
+        #hero h2 {
+            font-size: 48px;
+            margin: 0 0 20px;
         }
-        .game-item:hover { background: white; box-shadow: 0 3px 10px rgba(0,0,0,0.1); transform: translateY(-1px); }
-        .search-highlight { border-color: #ff6b6b !important; background: #fff5f5 !important; }
+        #hero p {
+            font-size: 24px;
+            margin: 0 0 20px;
+            opacity: 0.9;
+        }
+        #hero .subtext {
+            font-size: 20px;
+            margin: 20px 0 40px;
+            opacity: 0.9;
+        }
+        #hero input {
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            font-size: 18px;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -45,10 +46,11 @@
             <img src="images/logo.png" alt="RHF SETORS Logo" style="height:80px; margin-right:20px;">
             <h1 style="margin:0; font-size:40px; line-height:80px;">RHF SETORS</h1>
         </div>
+
         <div class="menu-items">
-            <a href="#games">Games</a>
-            <a href="#ewallet">E-Wallet</a>
-            <a href="#pulsa">Pulsa</a>
+            <a href="#promo">News & Promo</a>
+            <a href="#search">Cari Game</a>
+            <a href="#contact">Kontak Kami</a>
             <a href="admin.html">Admin</a>
         </div>
     </header>
@@ -58,23 +60,15 @@
             <h2>Top Up Games & Voucher</h2>
             <h2 style="font-size:48px; margin:0;">Murah, Aman, Cepat</h2>
             <p class="subtext">Top Up Games Voucher Lebih Murah 20%, Cepat, dan Aman. Tanpa login, langsung terisi!</p>
+            <input type="text" id="game-search" placeholder="Cari game atau voucher...">
         </section>
 
-        <!-- 3 Kolom Kecil -->
-        <section class="categories">
-            <div class="category-card games" id="games">
-                <div>GAMES</div>
-                <div id="games-list" class="game-items"></div>
-            </div>
-            <div class="category-card ewallet" id="ewallet">
-                <div>E-WALLET</div>
-                <div id="ewallet-list" class="game-items"></div>
-            </div>
-            <div class="category-card pulsa" id="pulsa">
-                <div>PULSA</div>
-                <div id="pulsa-list" class="game-items"></div>
-            </div>
+        <section id="popular">
+            <h2 style="text-align:center; color:#007bff; font-size:36px; margin:60px 0 40px;">TOP UP GAME</h2>
+            <div id="popular-games" class="game-list"></div>
         </section>
+
+        <!-- Section lain kalau ada -->
     </main>
 
     <footer>
