@@ -1,1 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RHF AppStore - Admin Panel</title>
+  <link rel="stylesheet" href="./assets/style.css">
+  <style>
+    body { font-family:'Poppins',sans-serif; background:#f5f5f5; margin:0; }
+    header { background:#0072ff; color:#fff; padding:16px; display:flex; justify-content:space-between; align-items:center; }
+    header .brand { font-size:20px; font-weight:700; }
+    main { padding:20px; }
+    h2 { margin-top:30px; color:#0072ff; }
+    .form { margin-bottom:20px; }
+    .form input { padding:10px; margin-right:10px; border:1px solid #ccc; border-radius:6px; }
+    .btn { padding:8px 14px; border:none; border-radius:6px; cursor:pointer; }
+    .btn-primary { background:#0072ff; color:#fff; }
+    .btn-danger { background:#dc3545; color:#fff; }
+    .btn-small { padding:6px 10px; font-size:12px; margin-right:6px; }
+    table { width:100%; border-collapse:collapse; margin-top:10px; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:left; }
+    th { background:#eee; }
+    #toast { position:fixed; bottom:20px; right:20px; background:#333; color:#fff; padding:10px 20px; border-radius:6px; opacity:0; transition:opacity 0.3s; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">RHF AppStore - Admin Panel</div>
+    <a href="index.html" class="btn btn-primary">⬅ Kembali ke Store</a>
+  </header>
 
+  <main>
+    <h2>Upload Aplikasi</h2>
+    <form id="uploadForm" class="form" enctype="multipart/form-data">
+      <input type="text" id="appName" placeholder="Nama Aplikasi" required>
+      <input type="text" id="developer" placeholder="Developer" required>
+      <input type="text" id="category" placeholder="Kategori" required>
+      <input type="file" id="apkFile" accept=".apk" multiple required>
+      <button type="submit" class="btn btn-primary">Upload APK</button>
+    </form>
+
+    <h2>Daftar Aplikasi</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Nama</th><th>Developer</th><th>Kategori</th><th>Rating</th><th>Downloads</th><th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="appTableBody"></tbody>
+    </table>
+
+    <h2>Manajemen Pengguna</h2>
+    <form id="saldoForm" class="form">
+      <input type="text" id="userId" placeholder="User ID" required>
+      <input type="number" id="newSaldo" placeholder="Saldo Baru" required>
+      <button type="submit" class="btn btn-primary">Update Saldo</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th><th>Username</th><th>Email</th><th>Saldo</th><th>Status</th><th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody"></tbody>
+    </table>
+  </main>
+
+  <div id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, push, set, update, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAyHSaALeuwibcF22VNL_6WDlcZepcDB3A",
+      authDomain: "rhf-gamestore.firebaseapp.com",
+      databaseURL: "https://rhf-gamestore-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "rhf-gamestore",
+      storageBucket: "rhf-gamestore.appspot.com",
+      messagingSenderId: "52065906934",
+      appId: "1:52065906934:web:c15f0eff91cc937f787cd7",
+      measurementId: "G-RYFR9D5R5H"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+
+    const toast = (msg) => {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.style.opacity = 1;
+      setTimeout(() => (t.style.opacity = 0), 2500);
+    };
+
+    // Upload APK
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("appName").value.trim();
+      const developer = document.getElementById("developer").value.trim();
+      const category = document.getElementById("category").value.trim();
+      const files = document.getElementById("apkFile").files;
+      if (!files.length) { toast("Pilih minimal satu file APK."); return; }
+      for (const file of files) {
+        const filePath = `apk/${Date.now()}_${file.name}`;
+        const fRef = storageRef(storage, filePath);
+        await uploadBytes(fRef, file);
+        const apkUrl = await getDownloadURL(fRef);
+        const newAppRef = push(ref(db, "apps"));
+        await set(newAppRef, { name, developer, category, apk_url: apkUrl, storage_path: filePath, rating: 0, downloads: 0, created_at: Date.now() });
+      }
+      toast("APK berhasil diunggah!"); e.target.reset();
+    });
+
+    // Render aplikasi
+    onValue(ref(db, "apps"), (snapshot) => {
+      const apps = snapshot.val() || {};
+      const tbody = document.getElementById("appTableBody");
+      tbody.innerHTML = "";
+      Object.entries(apps).forEach(([id, app]) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${id}</td>
+            <td>${app.name}</td>
+            <td>${app.developer}</td>
+            <td>${app.category}</td>
+            <td>${app.rating}</td>
+            <td>${app.downloads}</td>
+            <td><button class="btn btn-danger" onclick="deleteApp('${id}', '${app.storage_path}')">Delete</button></td>
+          </tr>`;
+      });
+    });
+
+    window.deleteApp = async (id, storagePath) => {
+      try {
+        if (storagePath) await deleteObject(storageRef(storage, storagePath));
+        await remove(ref(db, "apps/" + id));
+        toast("Aplikasi dihapus.");
+      } catch (err) { toast("Gagal hapus: " + err.message); }
+    };
+
+    // Update saldo user
+    document.getElementById("saldoForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const userId = document.getElementById("userId").value.trim();
+      const newSaldo = parseInt(document.getElementById("newSaldo").value);
+      await update(ref(db, "users/" + userId), { saldo: newSaldo });
+      toast("Saldo user diperbarui."); e.target.reset();
+    });
+
+    // Render user
+    onValue(ref(db, "users"), (snapshot) => {
+      const users = snapshot.val() || {};
+      const tbody = document.getElementById("userTableBody");
+      tbody.innerHTML = "";
+      Object.entries(users).forEach(([id, user]) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${id}</td>
+            <td>${user.username || "-"}</td>
+            <td>${user.email || "-"}</td>
+            <td>${user.saldo || 0}</td>
+            <td>${user.frozen ? "Beku" : "Aktif"}</td>
+            <td>
+              <button class="btn btn-small" onclick="freezeUser('${id}', ${!user.frozen})">${user.frozen ? "Unfreeze" : "Freeze"}</button>
+              <button class="btn btn-small btn-primary" onclick
+              <button class="btn btn-small btn-primary" onclick="giveSaldo('${id}', 10000)">+10k</button>
+              <button class="btn btn-small btn-danger" onclick="deleteUser('${id}')">Hapus</button>
+              <button class="btn btn-small" onclick="sendMessage('${id}')">Surat</button>
+            </td>
+          </tr>`;
+      });
+    });
+
+    window.freezeUser = async (id, freeze) => {
+      await update(ref(db, "users/" + id), { frozen: freeze });
+      toast(freeze ? "User dibekukan." : "User diaktifkan.");
+    };
+
+    window.giveSaldo = async (id, amount) => {
+      const snap = await get(ref(db, "users/" + id));
+      const current = (snap.exists() && snap.val().saldo) ? snap.val().saldo : 0;
+      await update(ref(db, "users/" + id), { saldo: current + amount });
+      toast("Saldo ditambahkan.");
+    };
+
+    window.deleteUser = async (id) => {
+      await remove(ref(db, "users/" + id));
+      toast("User dihapus.");
+    };
+
+    window.sendMessage = async (id) => {
+      const msg = prompt("Masukkan pesan untuk user:");
+      if (!msg) return;
+      const msgRef = push(ref(db, "users/" + id + "/messages"));
+      await set(msgRef, { message: msg, sent_at: Date.now() });
+      toast("Pesan dikirim.");
+    };
+  </script>
+</body>
+</html>
