@@ -100,6 +100,7 @@
       setTimeout(() => (t.style.opacity = 0), 2500);
     };
 
+    // Upload APK
     document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("appName").value.trim();
@@ -118,6 +119,7 @@
       toast("APK berhasil diunggah!"); e.target.reset();
     });
 
+    // Render aplikasi
     onValue(ref(db, "apps"), (snapshot) => {
       const apps = snapshot.val() || {};
       const tbody = document.getElementById("appTableBody");
@@ -144,6 +146,7 @@
       } catch (err) { toast("Gagal hapus: " + err.message); }
     };
 
+    // Update saldo user
     document.getElementById("saldoForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const userId = document.getElementById("userId").value.trim();
@@ -152,6 +155,7 @@
       toast("Saldo user diperbarui."); e.target.reset();
     });
 
+    // Render user
     onValue(ref(db, "users"), (snapshot) => {
       const users = snapshot.val() || {};
       const tbody = document.getElementById("userTableBody");
@@ -181,6 +185,9 @@
 
     window.giveSaldo = async (id, amount) => {
       const snap = await get(ref(db, "users/" + id));
+      const current =
+        window.giveSaldo = async (id, amount) => {
+      const snap = await get(ref(db, "users/" + id));
       const current = snap.val()?.saldo || 0;
       await update(ref(db, "users/" + id), { saldo: current + amount });
       toast("Saldo ditambahkan.");
@@ -192,11 +199,6 @@
     };
 
     window.sendMessage = async (id) => {
-      const msg = prompt("Masukkan pesan untuk user:");
-      if (msg) {
-        const msgRef = push(ref(db, "users/" + id + "/messages"));
-        await set(msgRef,
-        window.sendMessage = async (id) => {
       const msg = prompt("Masukkan pesan untuk user:");
       if (msg) {
         const msgRef = push(ref(db, "users/" + id + "/messages"));
