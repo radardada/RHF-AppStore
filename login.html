@@ -4,38 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Akun - RHF</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Poppins', sans-serif; background: linear-gradient(to bottom, #ff6600, #ff8800); color: #333; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(to bottom,#ff6600,#ff8800);
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+    }
     .card {
-      background: #fff;
-      width: 90%;
-      max-width: 450px;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-      text-align: center;
+      background:#fff; width:90%; max-width:420px;
+      border-radius:20px; padding:40px;
+      box-shadow:0 15px 40px rgba(0,0,0,0.3);
+      text-align:center;
     }
-    .card h1 { font-size: 32px; margin-bottom: 10px; color: #ff6600; }
-    .card p { font-size: 16px; color: #666; margin-bottom: 30px; }
-    .form-group { margin-bottom: 25px; text-align: left; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; }
+    .card h1 { font-size:28px; margin-bottom:10px; color:#ff6600; }
+    .card p { font-size:15px; color:#666; margin-bottom:25px; }
+    .form-group { margin-bottom:20px; text-align:left; }
+    .form-group label { font-weight:600; margin-bottom:6px; display:block; }
     .form-group input {
-      width: 100%; padding: 16px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px;
+      width:100%; padding:14px; border:2px solid #ddd; border-radius:12px; font-size:15px;
     }
-    .form-group input:focus { border-color: #ff6600; outline: none; }
-    .error { color: #dc3545; font-size: 14px; margin-top: 5px; display: none; }
+    .form-group input:focus { border-color:#ff6600; outline:none; }
+    .error { color:#dc3545; font-size:13px; margin-top:5px; display:none; }
     .btn {
-      width: 100%; padding: 18px; background: linear-gradient(to right, #ff6600, #ff8800);
-      color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 600;
-      cursor: pointer; margin-top: 10px;
+      width:100%; padding:16px;
+      background:linear-gradient(to right,#ff6600,#ff8800);
+      border:none; border-radius:12px; color:#fff;
+      font-size:16px; font-weight:600; cursor:pointer;
     }
-    .btn:hover { opacity: 0.9; }
-    .link { margin-top: 25px; font-size: 15px; }
-    .link a { color: #ff6600; text-decoration: none; font-weight: 600; }
-    .link a:hover { text-decoration: underline; }
+    .btn:hover { opacity:0.9; }
+    .link { margin-top:20px; font-size:14px; }
+    .link a { color:#ff6600; font-weight:600; text-decoration:none; }
+    .link a:hover { text-decoration:underline; }
   </style>
 </head>
 <body>
@@ -67,12 +68,13 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
+    // Konfigurasi Firebase milikmu (rhf-resmi)
     const firebaseConfig = {
       apiKey: "AIzaSyALIhKFz4bpOPmES6t2fAdx8VMPP0ye1wc",
       authDomain: "rhf-resmi.firebaseapp.com",
       databaseURL: "https://rhf-resmi-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "rhf-resmi",
-      storageBucket: "rhf-resmi.appspot.com", // ✅ diperbaiki
+      storageBucket: "rhf-resmi.appspot.com",
       messagingSenderId: "313439235544",
       appId: "1:313439235544:web:b19a2ad538e34c1fe516ad",
       measurementId: "G-LNCVH73P3X"
@@ -85,9 +87,7 @@
       let valid = true;
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
-
       document.querySelectorAll('.error').forEach(e => e.style.display = 'none');
-
       if (username === '') {
         document.getElementById('usernameError').textContent = 'Username wajib diisi!';
         document.getElementById('usernameError').style.display = 'block';
@@ -98,40 +98,35 @@
         document.getElementById('passwordError').style.display = 'block';
         valid = false;
       }
-
       return valid;
     }
 
     function login() {
       if (!validateForm()) return;
-
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
-      db.ref('users').orderByChild('username').equalTo(username).once('value', snapshot => {
-        if (snapshot.exists()) {
-          let userData = null;
-          let userKey = null;
-          snapshot.forEach(child => {
-            userData = child.val();
-            userKey = child.key;
-          });
-          if (userData.password === password) {
-            // Simpan session login (localStorage)
-            localStorage.setItem('userKey', userKey);
-            localStorage.setItem('username', username);
-            localStorage.setItem('saldo', userData.saldo || 0);
-            alert('Login berhasil! Selamat datang ' + username);
-            window.location.href = 'index.html';
+      db.ref('users').orderByChild('username').equalTo(username).once('value')
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            let userData = null, userKey = null;
+            snapshot.forEach(child => { userData = child.val(); userKey = child.key; });
+            if (userData.password === password) {
+              localStorage.setItem('userKey', userKey);
+              localStorage.setItem('username', username);
+              localStorage.setItem('saldo', userData.saldo || 0);
+              alert('Login berhasil! Selamat datang ' + username);
+              window.location.href = 'index.html';
+            } else {
+              document.getElementById('passwordError').textContent = 'Password salah!';
+              document.getElementById('passwordError').style.display = 'block';
+            }
           } else {
-            document.getElementById('passwordError').textContent = 'Password salah!';
-            document.getElementById('passwordError').style.display = 'block';
+            document.getElementById('usernameError').textContent = 'Username tidak ditemukan!';
+            document.getElementById('usernameError').style.display = 'block';
           }
-        } else {
-          document.getElementById('usernameError').textContent = 'Username tidak ditemukan!';
-          document.getElementById('usernameError').style.display = 'block';
-        }
-      }).catch(err => alert('Error: ' + err.message));
+        })
+        .catch(err => alert('Error: ' + err.message));
     }
   </script>
 
