@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RHF AppStore - Admin Panel</title>
+  <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-title">RHF AppStore</span>
+        <span class="brand-sub">Admin Panel</span>
+      </div>
+      <div class="toolbar">
+        <a href="index.html" class="btn">⬅ Kembali ke Store</a>
+      </div>
+    </div>
+  </header>
 
+  <main class="container" id="adminPanel">
+    <!-- Upload APK -->
+    <h2 class="admin-title">Upload Aplikasi</h2>
+    <form id="uploadForm" class="form" enctype="multipart/form-data">
+      <input type="text" id="appName" class="input" placeholder="Nama Aplikasi" required>
+      <input type="text" id="developer" class="input" placeholder="Developer" required>
+      <input type="text" id="category" class="input" placeholder="Kategori" required>
+      <input type="file" id="apkFile" class="file" accept=".apk" multiple required>
+      <button type="submit" class="btn btn-primary">Upload APK</button>
+    </form>
+
+    <!-- Daftar Aplikasi -->
+    <h2 class="admin-title mt-16">Daftar Aplikasi</h2>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Developer</th>
+            <th>Kategori</th>
+            <th>Rating</th>
+            <th>Downloads</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="appTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Manajemen User -->
+    <h2 class="admin-title mt-16">Manajemen Pengguna</h2>
+    <form id="saldoForm" class="form">
+      <input type="text" id="userId" class="input" placeholder="User ID" required>
+      <input type="number" id="newSaldo" class="input" placeholder="Saldo Baru" required>
+      <button type="submit" class="btn btn-primary">Update Saldo</button>
+    </form>
+
+    <div class="table-wrap mt-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Saldo</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Modal Edit App -->
+  <div id="editModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span class="modal-title">Edit Aplikasi</span>
+        <button id="editCancel" class="btn btn-small">✖</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="editName" class="input" placeholder="Nama Aplikasi">
+        <input type="text" id="editDeveloper" class="input" placeholder="Developer">
+        <input type="text" id="editCategory" class="input" placeholder="Kategori">
+        <input type="number" id="editRating" class="input" placeholder="Rating">
+      </div>
+      <div class="modal-actions">
+        <button id="editSave" class="btn btn-primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- Firebase & Script -->
+  <script type="module" src="./assets/script.js"></script>
+</body>
+</html>
