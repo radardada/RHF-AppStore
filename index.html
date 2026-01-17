@@ -1,78 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Akses File</title>
+  <title>Secure Access</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <header>
-    <h1>Akses File</h1>
-    <p>Masukkan kode dan password untuk membuka file</p>
-  </header>
-
-  <main>
-    <section id="step1">
-      <input id="codeInput" placeholder="Masukkan kode file">
-      <button onclick="checkCode()">Lanjut</button>
-    </section>
-
-    <section id="step2" style="display:none;">
-      <input id="passwordInput" type="password" placeholder="Masukkan password">
-      <button onclick="checkPassword()">Buka File</button>
-    </section>
-
-    <section id="result"></section>
-  </main>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAyHSaALeuwibcF22VNL_6WDlcZepcDB3A",
-      authDomain: "rhf-gamestore.firebaseapp.com",
-      databaseURL: "https://rhf-gamestore-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "rhf-gamestore",
-      storageBucket: "rhf-gamestore.appspot.com", // ← perbaikan
-      messagingSenderId: "52065906934",
-      appId: "1:52065906934:web:c15f0eff91cc937f787cd7",
-      measurementId: "G-RYFR9D5R5H"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    let currentFile = null;
-
-    window.checkCode = function() {
-      const code = document.getElementById("codeInput").value;
-      const dbRef = ref(db);
-      get(child(dbRef, 'files/' + code)).then(snapshot => {
-        if (snapshot.exists()) {
-          currentFile = snapshot.val();
-          document.getElementById("step1").style.display = "none";
-          document.getElementById("step2").style.display = "block";
-        } else {
-          document.getElementById("result").textContent = "Kode tidak ditemukan";
-        }
-      });
-    };
-
-    window.checkPassword = function() {
-      const password = document.getElementById("passwordInput").value;
-      if (currentFile && password === currentFile.password) {
-        if (currentFile.url.endsWith(".mp4")) {
-          document.getElementById("result").innerHTML = `<video src="${currentFile.url}" controls width="400"></video>`;
-        } else if (currentFile.url.match(/\.(jpg|png|gif)$/)) {
-          document.getElementById("result").innerHTML = `<img src="${currentFile.url}" width="300">`;
-        } else {
-          document.getElementById("result").innerHTML = `<a href="${currentFile.url}" target="_blank">${currentFile.name}</a>`;
-        }
-      } else {
-        document.getElementById("result").textContent = "Password salah";
-      }
-    };
-  </script>
+<body class="lux">
+  <div class="box">
+    <h2>Private Access</h2>
+    <input id="user" placeholder="Username">
+    <input id="code" placeholder="Kode Unik">
+    <button onclick="step1()">Masuk</button>
+  </div>
+<script src="secure.js"></script>
 </body>
 </html>
