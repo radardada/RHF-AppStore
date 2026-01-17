@@ -1,131 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Panel</title>
+  <title>ADMIN PANEL</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <header>
-    <h1>Admin Panel</h1>
-    <p>Kelola file (upload, edit, hapus) dengan kode akses</p>
-  </header>
-
-  <main>
-    <section class="upload-box">
-      <input type="file" id="fileInput">
-      <input type="text" id="passwordInput" placeholder="Password untuk file">
-      <input type="text" id="codeInput" placeholder="Custom kode (opsional)">
-      <button onclick="uploadFile()">Upload</button>
-      <p id="status"></p>
-    </section>
-
-    <section class="list-box">
-      <h2>Daftar File</h2>
-      <table id="fileTable">
-        <thead>
-          <tr>
-            <th>Kode</th>
-            <th>Nama</th>
-            <th>Password</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-  </main>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
-    import { getDatabase, ref, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
-    // Config Firebase project kamu
-    const firebaseConfig = {
-      apiKey: "AIzaSyAyHSaALeuwibcF22VNL_6WDlcZepcDB3A",
-      authDomain: "rhf-gamestore.firebaseapp.com",
-      databaseURL: "https://rhf-gamestore-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "rhf-gamestore",
-      storageBucket: "rhf-gamestore.appspot.com", // sudah diperbaiki
-      messagingSenderId: "52065906934",
-      appId: "1:52065906934:web:c15f0eff91cc937f787cd7",
-      measurementId: "G-RYFR9D5R5H"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
-    const db = getDatabase(app);
-
-    // Generate kode random
-    function randomCode(length=6) {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      return Array.from({length}, () => chars[Math.floor(Math.random()*chars.length)]).join("");
-    }
-
-    // Upload file
-    window.uploadFile = function() {
-      const file = document.getElementById("fileInput").files[0];
-      const password = document.getElementById("passwordInput").value;
-      let code = document.getElementById("codeInput").value.trim();
-      if (!file || !password) {
-        alert("File dan password wajib diisi");
-        return;
-      }
-      if (!code) code = randomCode();
-
-      const storageRef = sRef(storage, 'uploads/' + file.name);
-      uploadBytes(storageRef, file).then(snapshot => {
-        getDownloadURL(snapshot.ref).then(url => {
-          set(ref(db, 'files/' + code), {
-            name: file.name,
-            url: url,
-            password: password
-          });
-          document.getElementById("status").textContent = "Upload sukses. Kode: " + code;
-        });
-      }).catch(err => {
-        document.getElementById("status").textContent = "Upload gagal: " + err.message;
-      });
-    };
-
-    // Render daftar file
-    const fileTableBody = document.querySelector("#fileTable tbody");
-    onValue(ref(db, 'files'), (snapshot) => {
-      const data = snapshot.val();
-      fileTableBody.innerHTML = "";
-      if (data) {
-        for (let code in data) {
-          const file = data[code];
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${code}</td>
-            <td>${file.name}</td>
-            <td>${file.password}</td>
-            <td>
-              <button onclick="editFile('${code}')">Edit</button>
-              <button onclick="deleteFile('${code}')">Hapus</button>
-            </td>
-          `;
-          fileTableBody.appendChild(row);
-        }
-      }
-    });
-
-    // Edit file (ubah password)
-    window.editFile = function(code) {
-      const newPassword = prompt("Masukkan password baru:");
-      if (newPassword) {
-        update(ref(db, 'files/' + code), { password: newPassword });
-      }
-    };
-
-    // Hapus file
-    window.deleteFile = function(code) {
-      if (confirm("Yakin hapus file dengan kode " + code + "?")) {
-        remove(ref(db, 'files/' + code));
-      }
-    };
-  </script>
+<body class="lux">
+  <div class="box">
+    <h2>Admin Upload</h2>
+    <input type="file" id="file">
+    <button onclick="upload()">Upload</button>
+  </div>
+<script src="secure.js"></script>
 </body>
 </html>
