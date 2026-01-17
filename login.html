@@ -8,7 +8,77 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* CSS sama persis seperti sebelumnya */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: linear-gradient(to bottom, #ff6600, #ff8800); color: #333; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card {
+      background: #fff;
+      width: 90%;
+      max-width: 450px;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .card h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #ff6600;
+    }
+    .card p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+    .form-group input:focus {
+      border-color: #ff6600;
+      outline: none;
+    }
+    .error {
+      color: #dc3545;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+    .btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(to right, #ff6600, #ff8800);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover { opacity: 0.9; }
+    .link {
+      margin-top: 25px;
+      font-size: 15px;
+    }
+    .link a {
+      color: #ff6600;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .link a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -35,7 +105,7 @@
     </div>
   </div>
 
-  <!-- Firebase Modular SDK -->
+    <!-- Firebase Modular SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getDatabase, ref, query, orderByChild, equalTo, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -52,9 +122,8 @@
       measurementId: "G-RYFR9D5R5H"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const analytics = getAnalytics(app);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
     function validateForm() {
       let valid = true;
@@ -77,16 +146,13 @@
       return valid;
     }
 
-    async function login() {
+    function login() {
       if (!validateForm()) return;
 
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
-      try {
-        const q = query(ref(db, 'users'), orderByChild('username'), equalTo(username));
-        const snapshot = await get(q);
-
+      db.ref('users').orderByChild('username').equalTo(username).once('value', snapshot => {
         if (snapshot.exists()) {
           let userData = null;
           let userKey = null;
@@ -94,8 +160,8 @@
             userData = child.val();
             userKey = child.key;
           });
-
           if (userData.password === password) {
+            // Simpan session login (localStorage)
             localStorage.setItem('userKey', userKey);
             localStorage.setItem('username', username);
             localStorage.setItem('saldo', userData.saldo || 0);
@@ -109,9 +175,7 @@
           document.getElementById('usernameError').textContent = 'Username tidak ditemukan!';
           document.getElementById('usernameError').style.display = 'block';
         }
-      } catch (err) {
-        alert('Error: ' + err.message);
-      }
+      }).catch(err => alert('Error: ' + err.message));
     }
   </script>
 
