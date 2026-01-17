@@ -1,19 +1,31 @@
-`css
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
   margin: 0;
-  padding: 40px;
-  text-align: center;
-}
-
-h1 {
+  background: #f4f4f4;
   color: #333;
 }
 
+header {
+  background: #2575fc;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+main {
+  margin: 30px auto;
+  max-width: 600px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
 input {
+  display: block;
+  margin: 10px auto;
   padding: 10px;
-  margin: 10px;
+  width: 90%;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
@@ -31,11 +43,11 @@ button:hover {
   background: #2575fc;
 }
 
-result {
+table {
+  width: 100%;
+  border-collapse: collapse;
   margin-top: 20px;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
-`
+
+th, td {
+  border: 1px solid #ccc;
