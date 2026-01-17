@@ -41,14 +41,16 @@
     import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
     import { getDatabase, ref, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
+    // Pakai API config kamu
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "YOUR_PROJECT",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyAyHSaALeuwibcF22VNL_6WDlcZepcDB3A",
+      authDomain: "rhf-gamestore.firebaseapp.com",
+      databaseURL: "https://rhf-gamestore-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "rhf-gamestore",
+      storageBucket: "rhf-gamestore.firebasestorage.app",
+      messagingSenderId: "52065906934",
+      appId: "1:52065906934:web:c15f0eff91cc937f787cd7",
+      measurementId: "G-RYFR9D5R5H"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -60,7 +62,6 @@
       return Array.from({length}, () => chars[Math.floor(Math.random()*chars.length)]).join("");
     }
 
-    // Upload file
     window.uploadFile = function() {
       const file = document.getElementById("fileInput").files[0];
       const password = document.getElementById("passwordInput").value;
@@ -84,7 +85,6 @@
       });
     };
 
-    // Render daftar file
     const fileTableBody = document.querySelector("#fileTable tbody");
     onValue(ref(db, 'files'), (snapshot) => {
       const data = snapshot.val();
@@ -105,7 +105,6 @@
       }
     });
 
-    // Edit file (ubah password)
     window.editFile = function(code) {
       const newPassword = prompt("Masukkan password baru:");
       if (newPassword) {
@@ -113,7 +112,6 @@
       }
     };
 
-    // Hapus file
     window.deleteFile = function(code) {
       if (confirm("Yakin hapus file dengan kode " + code + "?")) {
         remove(ref(db, 'files/' + code));
